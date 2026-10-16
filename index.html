@@ -1,0 +1,1280 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0;font-size:14px}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Stepwise LeetCode</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: problem index on the left; on the right a graph-paper "stage" where the algorithm moves, with code + variables beside it. */
+:root{
+  --bg:#EDF1F4; --panel:#FFFFFF; --ink:#16222C; --muted:#5A6A77; --line:#D3DCE3; --grid:rgba(30,90,130,.075);
+  --accent:#1C6688; --accent-soft:#DAEAF2; --on-accent:#FFFFFF;
+  --p1:#C97D00; --p2:#B2357A; --p3:#23866A;
+  --hit:#25935A; --hit-soft:#D5EFDF; --miss:#C2452F; --miss-soft:#F6DED8; --cur-soft:#FFEFC7;
+  --water:#CCE4F2; --land:#E6D8B4;
+  --i1:#3E9BCF; --i2:#D9733B; --i3:#5DAE4E; --i4:#A267C9; --i5:#D14F7E;
+  --code-bg:#F5F8FA; --code-hl:#FFE9B0;
+  --f-display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body:"Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+  --f-mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0D141A; --panel:#141E26; --ink:#E1E9EF; --muted:#8C9EAC; --line:#26343F; --grid:rgba(130,190,225,.06);
+  --accent:#5DB3D9; --accent-soft:#173646; --on-accent:#08141B;
+  --p1:#F0B03A; --p2:#E86FAE; --p3:#4CC79E;
+  --hit:#4CC383; --hit-soft:#16382A; --miss:#EE7562; --miss-soft:#3E211C; --cur-soft:#3A3014;
+  --water:#163A4E; --land:#4D4330;
+  --i1:#4FAEE0; --i2:#E8874E; --i3:#6FC25E; --i4:#B682DB; --i5:#E46792;
+  --code-bg:#101920; --code-hl:#3D3416; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#0D141A; --panel:#141E26; --ink:#E1E9EF; --muted:#8C9EAC; --line:#26343F; --grid:rgba(130,190,225,.06);
+  --accent:#5DB3D9; --accent-soft:#173646; --on-accent:#08141B;
+  --p1:#F0B03A; --p2:#E86FAE; --p3:#4CC79E;
+  --hit:#4CC383; --hit-soft:#16382A; --miss:#EE7562; --miss-soft:#3E211C; --cur-soft:#3A3014;
+  --water:#163A4E; --land:#4D4330;
+  --i1:#4FAEE0; --i2:#E8874E; --i3:#6FC25E; --i4:#B682DB; --i5:#E46792;
+  --code-bg:#101920; --code-hl:#3D3416; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+code{font-family:var(--f-mono);font-size:.9em;background:var(--accent-soft);padding:0 .3em;border-radius:4px}
+
+.app{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100%}
+.side{border-right:1px solid var(--line);padding-block:22px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:16px;position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto}
+.brand{font-family:var(--f-display);font-weight:800;font-size:1.45rem;letter-spacing:-.01em;display:flex;flex-direction:column;gap:2px;margin-bottom:22px}
+.brand span{font-family:var(--f-body);font-weight:400;font-size:.82rem;color:var(--muted);letter-spacing:0}
+.nav-cat{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin:18px 0 6px;font-weight:700}
+.nav-item{display:flex;align-items:baseline;gap:8px;width:100%;text-align:left;background:none;border:0;padding:6px 8px;border-radius:7px;cursor:pointer;line-height:1.3}
+.nav-item:hover{background:var(--accent-soft)}
+.nav-item[aria-current="true"]{background:var(--accent);color:var(--on-accent)}
+.nav-item .n{font-family:var(--f-mono);font-size:.75rem;opacity:.7;min-width:2.6em}
+
+.main{padding-block:24px 48px;padding-left:28px;padding-right:max(16px,env(safe-area-inset-right,0px));min-width:0;display:flex;flex-direction:column;gap:18px}
+.mobile-pick{display:none}
+.ph{display:flex;flex-direction:column;gap:6px;max-width:900px}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.8rem}
+.chip{padding:2px 9px;border-radius:99px;border:1px solid var(--line);background:var(--panel);font-weight:700}
+.chip.easy{color:var(--hit);border-color:currentColor}
+.chip.medium{color:var(--p1);border-color:currentColor}
+.chip.num{font-family:var(--f-mono);font-weight:600}
+h1{font-family:var(--f-display);font-weight:800;font-size:clamp(1.7rem,3.2vw,2.4rem);line-height:1.1;margin:2px 0;letter-spacing:-.015em;text-wrap:balance}
+.statement{margin:0;max-width:68ch}
+.lc{font-size:.85rem;color:var(--accent);font-weight:700;text-decoration:none;width:max-content}
+.lc:hover{text-decoration:underline}
+
+.idea{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 18px;display:flex;flex-direction:column;gap:6px;max-width:900px}
+.idea-t{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--accent)}
+.idea p{margin:0;font-size:1.02rem;max-width:72ch}
+.cx{display:flex;gap:18px;font-size:.85rem;color:var(--muted)}
+.cx b{font-family:var(--f-mono);color:var(--ink);font-weight:600}
+
+.inputs{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.field{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1 1 180px;max-width:420px}
+.field label{font-family:var(--f-mono);font-size:.8rem;color:var(--muted)}
+.field input{font-family:var(--f-mono);font-size:.9rem;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);width:100%}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:8px 14px;cursor:pointer;font-weight:700}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.err{color:var(--miss);font-size:.88rem;flex-basis:100%;margin:0}
+
+.work{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(0,1fr);gap:18px;align-items:start}
+.left,.right{display:flex;flex-direction:column;gap:12px;min-width:0}
+.stage{background-color:var(--panel);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:22px 22px;border:1px solid var(--line);border-radius:12px;padding:18px;min-height:300px;overflow-x:auto}
+.controls{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.ctl{width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--line);background:var(--panel);border-radius:10px;cursor:pointer;padding:0}
+.ctl:hover{border-color:var(--accent)}
+.ctl.play{width:52px;background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.ctl svg{width:18px;height:18px;fill:currentColor}
+.scrub{flex:1 1 140px;accent-color:var(--accent);min-width:0}
+.speed{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:6px 8px}
+.narr{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:14px 18px;min-height:110px}
+.narr-top{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.narr p{margin:6px 0 0;font-size:1.08rem;line-height:1.55;max-width:70ch}
+.narr b{color:var(--accent)}
+.kbd{font-family:var(--f-mono);font-size:.72rem;color:var(--muted)}
+
+.pn-box{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.pn-h{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;font-weight:700;color:var(--muted);padding:9px 14px;border-bottom:1px solid var(--line)}
+pre.code{margin:0;background:var(--code-bg);font-family:var(--f-mono);font-size:.8rem;line-height:1.7;overflow-x:auto;padding:8px 0}
+.ln{display:block;padding:0 14px 0 0;white-space:pre;border-left:3px solid transparent}
+.ln .no{display:inline-block;width:2.6em;text-align:right;padding-right:12px;color:var(--muted);opacity:.6;user-select:none}
+.ln.on{background:var(--code-hl);border-left-color:var(--p1)}
+.ln.on .no{opacity:1;color:var(--ink)}
+.tk-k{color:var(--accent);font-weight:600}.tk-c{color:var(--muted);font-style:italic}.tk-n{color:var(--p2)}.tk-s{color:var(--p3)}
+.vars{display:flex;flex-wrap:wrap;gap:6px;padding:12px 14px}
+.var{font-family:var(--f-mono);font-size:.82rem;border:1px solid var(--line);border-radius:7px;padding:3px 8px;background:var(--code-bg);max-width:100%;overflow-wrap:anywhere}
+.var .vn{color:var(--muted)}
+.var.chg{border-color:var(--p1);background:var(--cur-soft)}
+.empty-v{color:var(--muted);font-size:.85rem}
+
+/* ---------- visual pieces ---------- */
+.row{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.pn{display:flex;flex-direction:column;gap:8px;min-width:0}
+.pn-t{font-family:var(--f-mono);font-size:.78rem;color:var(--muted);font-weight:600}
+.pn-t .sub{font-weight:400;opacity:.8}
+.arr{display:flex;gap:6px}
+.col{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:44px}
+.cell{width:44px;height:44px;display:grid;place-items:center;border:2px solid var(--line);border-radius:8px;background:var(--panel);font-family:var(--f-mono);font-weight:600;font-size:1rem;transition:background .2s,border-color .2s,opacity .2s}
+.cell.cur{border-color:var(--p1);background:var(--cur-soft)}
+.cell.hit{border-color:var(--hit);background:var(--hit-soft)}
+.cell.dup{border-color:var(--miss);background:var(--miss-soft)}
+.cell.win{border-color:var(--accent);background:var(--accent-soft)}
+.cell.win.cur{border-color:var(--p1);background:var(--cur-soft)}
+.cell.dim{opacity:.3}
+.ix{font-family:var(--f-mono);font-size:.7rem;color:var(--muted)}
+.tags{display:flex;flex-direction:column;align-items:center;gap:2px;min-height:18px}
+.ptr{font-family:var(--f-mono);font-size:.74rem;font-weight:600;line-height:1.1}
+.ptr::before{content:"▲ ";font-size:.6rem}
+.ptr.p1{color:var(--p1)}.ptr.p2{color:var(--p2)}.ptr.p3{color:var(--p3)}
+.map{display:flex;flex-direction:column;gap:4px;min-width:140px}
+.kv{display:flex;gap:8px;align-items:center;font-family:var(--f-mono);font-size:.88rem;border:1px solid var(--line);border-radius:7px;padding:3px 10px;background:var(--panel)}
+.kv .arrow{color:var(--muted)}
+.kv.new{border-color:var(--p1);background:var(--cur-soft)}
+.kv.hit{border-color:var(--hit);background:var(--hit-soft)}
+.kv.miss{border-style:dashed;border-color:var(--miss);color:var(--miss)}
+.empty{font-family:var(--f-mono);font-size:.85rem;color:var(--muted);border:1px dashed var(--line);border-radius:7px;padding:5px 10px}
+.note{font-family:var(--f-mono);font-size:.9rem;padding:6px 12px;border-radius:8px;background:var(--cur-soft);border:1px solid var(--p1);align-self:flex-start}
+.res{display:flex;flex-wrap:wrap;gap:5px;max-width:520px}
+.res span{font-family:var(--f-mono);font-size:.82rem;border:1px solid var(--line);border-radius:6px;padding:2px 7px;background:var(--panel)}
+.res span.new{border-color:var(--hit);background:var(--hit-soft)}
+.stack{display:flex;flex-direction:column;gap:4px;min-width:170px}
+.fr{font-family:var(--f-mono);font-size:.8rem;border:1px solid var(--line);border-radius:7px;padding:4px 10px;background:var(--panel)}
+.fr.top{border-color:var(--p1);background:var(--cur-soft)}
+.fr .meta2{color:var(--muted)}
+.queue{display:flex;gap:4px;align-items:center;flex-wrap:wrap}
+.queue .qi{font-family:var(--f-mono);border:2px solid var(--p3);border-radius:7px;padding:4px 10px;background:var(--panel);font-weight:600}
+.queue .lab{font-size:.7rem;color:var(--muted);font-family:var(--f-mono)}
+
+svg.vz{display:block;overflow:visible}
+svg.vz text{font-family:var(--f-mono);fill:var(--ink)}
+svg.vz .t-muted{fill:var(--muted)}
+svg.vz .box{fill:var(--panel);stroke:var(--line);stroke-width:2}
+svg.vz .box.cur{stroke:var(--p1);fill:var(--cur-soft)}
+svg.vz .box.src{stroke:var(--accent);fill:var(--accent-soft)}
+svg.vz .box.hit{stroke:var(--hit);fill:var(--hit-soft)}
+svg.vz .box.blank{fill:var(--panel);stroke-dasharray:4 3}
+svg.vz .box.ghost{fill:none;stroke:var(--line);stroke-dasharray:4 4}
+svg.vz .box.null{fill:none;stroke:var(--muted);stroke-dasharray:4 3}
+svg.vz .ar{stroke:var(--muted);stroke-width:2}
+svg.vz .ar-h{fill:var(--muted)}
+svg.vz .ar.rev{stroke:var(--accent)}
+svg.vz .ar.rev-h,svg.vz .ar-h.rev-h{fill:var(--accent)}
+svg.vz .ar.src{stroke:var(--accent);stroke-width:2.2}
+svg.vz .src-h{fill:var(--accent)}
+svg.vz .edge{stroke:var(--line);stroke-width:2}
+svg.vz .edge.on{stroke:var(--muted)}
+svg.vz .edge.ghost{stroke-dasharray:4 4}
+svg.vz .nd{fill:var(--panel);stroke:var(--muted);stroke-width:2}
+svg.vz .nd.active{stroke:var(--p1);fill:var(--cur-soft);stroke-width:3}
+svg.vz .nd.stack{stroke:var(--p1);stroke-dasharray:4 3}
+svg.vz .nd.done{stroke:var(--hit);fill:var(--hit-soft)}
+svg.vz .nd.queue{stroke:var(--p3);stroke-width:3}
+svg.vz .nd.del{stroke:var(--miss);fill:var(--miss-soft);stroke-width:3}
+svg.vz .nd.ghost{fill:none;stroke:var(--line);stroke-dasharray:4 4}
+svg.vz .badge{fill:var(--hit);font-weight:600}
+svg.vz .bar{fill:var(--land);stroke:var(--muted);stroke-width:1}
+svg.vz .bar.l{fill:var(--p1);stroke:none}
+svg.vz .bar.r{fill:var(--p2);stroke:none}
+svg.vz .bar.out{opacity:.35}
+svg.vz .water{fill:var(--i1);opacity:.35}
+svg.vz .bestbox{fill:none;stroke:var(--hit);stroke-width:2;stroke-dasharray:6 4}
+svg.vz .p1{fill:var(--p1)} svg.vz .p2{fill:var(--p2)} svg.vz .p3{fill:var(--p3)}
+svg.vz text.p1,svg.vz text.p2,svg.vz text.p3{font-weight:600}
+svg.vz .elab{font-size:11px;fill:var(--muted)}
+svg.vz .elab.on{fill:var(--accent);font-weight:600}
+
+table.dp{border-collapse:separate;border-spacing:4px;font-family:var(--f-mono)}
+table.dp th{font-size:.8rem;color:var(--muted);font-weight:600;padding:2px}
+table.dp th .ix{display:block;font-size:.62rem;opacity:.8}
+table.dp th.hl{color:var(--p1)}
+table.dp td{width:38px;height:38px;text-align:center;border:2px solid var(--line);border-radius:7px;background:var(--panel);font-weight:600}
+table.dp td.blank{color:transparent;border-style:dashed}
+table.dp td.cur{border-color:var(--p1);background:var(--cur-soft)}
+table.dp td.src{border-color:var(--accent);background:var(--accent-soft)}
+table.dp td.path{border-color:var(--hit);background:var(--hit-soft)}
+table.dp td.base{color:var(--muted)}
+.grid{display:grid;gap:4px}
+.gc{width:40px;height:40px;border-radius:7px;display:grid;place-items:center;font-family:var(--f-mono);font-weight:600;font-size:.85rem;border:2px solid transparent}
+.gc.w{background:var(--water);color:var(--muted)}
+.gc.l{background:var(--land)}
+.gc.v1{background:var(--i1);color:#fff}.gc.v2{background:var(--i2);color:#fff}.gc.v3{background:var(--i3);color:#fff}.gc.v4{background:var(--i4);color:#fff}.gc.v5{background:var(--i5);color:#fff}
+.gc.cur{border-color:var(--ink);box-shadow:0 0 0 2px var(--p1)}
+.gc.scan{border-color:var(--ink);border-style:dashed}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.78rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px}
+
+@media (max-width:1100px){ .work{grid-template-columns:minmax(0,1fr)} }
+@media (max-width:760px){
+  .app{grid-template-columns:minmax(0,1fr)}
+  .side{display:none}
+  .main{padding-left:max(16px,env(safe-area-inset-left,0px));padding-block:16px 40px}
+  .mobile-pick{display:flex;flex-direction:column;gap:4px}
+  .mobile-pick .brand{margin-bottom:6px;font-size:1.25rem}
+  .mobile-pick select{padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+  .mobile-pick label{font-size:.75rem;color:var(--muted)}
+  .stage{padding:14px;min-height:240px}
+}
+@media (prefers-reduced-motion:reduce){ *{transition:none!important} }
+</style>
+
+<div class="app">
+  <aside class="side">
+    <div class="brand">Stepwise<span>LeetCode solutions you can watch run, one step at a time.</span></div>
+    <nav id="nav" aria-label="Problems"></nav>
+  </aside>
+  <main class="main">
+    <div class="mobile-pick">
+      <div class="brand">Stepwise</div>
+      <label for="pick">Problem</label>
+      <select id="pick"></select>
+    </div>
+    <header class="ph">
+      <div class="meta" id="meta"></div>
+      <h1 id="title"></h1>
+      <p class="statement" id="statement"></p>
+      <a class="lc" id="lc" href="https://leetcode.com" target="_blank" rel="noopener">Open on LeetCode ↗</a>
+    </header>
+    <section class="idea">
+      <div class="idea-t">The key idea</div>
+      <p id="idea"></p>
+      <div class="cx"><span>Time <b id="time"></b></span><span>Space <b id="space"></b></span></div>
+    </section>
+    <form class="inputs" id="inputs" autocomplete="off"></form>
+    <div class="work">
+      <div class="left">
+        <div class="stage" id="stage" aria-live="off"></div>
+        <div class="controls">
+          <button class="ctl" id="b-first" type="button" title="Back to start (Home)" aria-label="Back to start"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+          <button class="ctl" id="b-prev" type="button" title="Previous step (←)" aria-label="Previous step"><svg viewBox="0 0 24 24"><path d="M17 5v14L6 12z"/></svg></button>
+          <button class="ctl play" id="b-play" type="button" title="Play / pause (Space)" aria-label="Play"><svg viewBox="0 0 24 24" id="i-play"><path d="M7 5v14l12-7z"/></svg></button>
+          <button class="ctl" id="b-next" type="button" title="Next step (→)" aria-label="Next step"><svg viewBox="0 0 24 24"><path d="M7 5v14l11-7z"/></svg></button>
+          <button class="ctl" id="b-last" type="button" title="Jump to end (End)" aria-label="Jump to end"><svg viewBox="0 0 24 24"><path d="M16 5h2v14h-2zM4 5v14l11-7z"/></svg></button>
+          <input class="scrub" id="scrub" type="range" min="0" max="0" value="0" aria-label="Step">
+          <select class="speed" id="speed" aria-label="Speed">
+            <option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option>
+          </select>
+        </div>
+        <div class="narr" aria-live="polite">
+          <div class="narr-top"><span id="counter"></span><span class="kbd">← → to step · space to play</span></div>
+          <p id="msg"></p>
+        </div>
+      </div>
+      <div class="right">
+        <div class="pn-box"><div class="pn-h">Python solution</div><pre class="code" id="code"></pre></div>
+        <div class="pn-box"><div class="pn-h">Variables right now</div><div class="vars" id="vars"></div></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+/* ================= helpers ================= */
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function fmt(v){
+  if (v === null || v === undefined) return 'None';
+  if (v === Infinity) return 'inf';
+  if (Array.isArray(v)) return '[' + v.map(fmt).join(', ') + ']';
+  return String(v);
+}
+const q = s => `'${s}'`;
+const panel = (t, inner) => `<div class="pn"><div class="pn-t">${t}</div>${inner}</div>`;
+const row = (...k) => `<div class="row">${k.filter(Boolean).join('')}</div>`;
+const note = t => `<div class="note">${t}</div>`;
+
+function arrayView({vals, ptrs = [], cls = {}}){
+  return `<div class="arr">` + vals.map((v, i) => {
+    const tags = ptrs.filter(p => p.idx === i).map(p => `<span class="ptr p${p.c}">${p.name}</span>`).join('');
+    return `<div class="col"><div class="cell ${cls[i] || ''}">${esc(fmt(v))}</div><div class="ix">${i}</div><div class="tags">${tags}</div></div>`;
+  }).join('') + `</div>`;
+}
+function mapView(entries, o = {}){
+  const kf = o.kf || fmt;
+  if (!entries.length && o.miss == null) return `<div class="empty">{ } empty</div>`;
+  let s = entries.map(([k, v]) => `<div class="kv ${k === o.hit ? 'hit' : ''} ${k === o.added ? 'new' : ''}"><span class="k">${esc(kf(k))}</span><span class="arrow">→</span><span class="v">${esc(fmt(v))}</span></div>`).join('');
+  if (o.miss != null) s += `<div class="kv miss"><span class="k">${esc(kf(o.miss))}</span><span class="arrow">?</span><span class="v">not in map</span></div>`;
+  return `<div class="map">${s}</div>`;
+}
+function resView(items, newIdx){
+  if (!items.length) return `<div class="empty">[ ] empty</div>`;
+  return `<div class="res">` + items.map((it, i) => `<span class="${i === newIdx ? 'new' : ''}">${esc(fmt(it))}</span>`).join('') + `</div>`;
+}
+function stackView(frames, label = 'call stack (top = running now)'){
+  const body = frames.length ? [...frames].reverse().map((f, i) => `<div class="fr ${i === 0 ? 'top' : ''}">${f}</div>`).join('') : `<div class="empty">empty</div>`;
+  return panel(label, `<div class="stack">${body}</div>`);
+}
+// quadratic arrow with a head
+function arrow(x1, y1, x2, y2, cx, cy, cls){
+  const dx = x2 - cx, dy = y2 - cy, L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, s = 9;
+  const bx = x2 - ux * s, by = y2 - uy * s, px = -uy * s * .5, py = ux * s * .5;
+  return `<path class="ar ${cls}" d="M${x1},${y1} Q${cx},${cy} ${bx},${by}" fill="none"/><polygon class="ar-h ${cls ? cls + '-h' : ''}" points="${x2},${y2} ${bx + px},${by + py} ${bx - px},${by - py}"/>`;
+}
+
+/* ---- linked list ---- */
+function listView(vals, next, rev, ptrs){
+  const n = vals.length, w = 50, hh = 38, gap = 42, top = 64;
+  const X = k => 12 + (k + 1) * (w + gap);
+  const W = X(n) + w + 12, H = top + hh + 22 + 3 * 16;
+  let s = '';
+  s += `<rect class="box null" x="${X(-1)}" y="${top}" width="${w}" height="${hh}" rx="8"/><text class="t-muted" x="${X(-1) + w / 2}" y="${top + hh / 2 + 5}" text-anchor="middle" font-size="12">None</text>`;
+  s += `<rect class="box null" x="${X(n)}" y="${top}" width="${w}" height="${hh}" rx="8"/><text class="t-muted" x="${X(n) + w / 2}" y="${top + hh / 2 + 5}" text-anchor="middle" font-size="12">None</text>`;
+  for (let i = 0; i < n; i++){
+    const j = next[i];
+    const t = j === null ? (rev.has(i) ? -1 : n) : j;
+    if (t > i){
+      const x1 = X(i) + w, x2 = X(t) - 2, y = top + hh / 2;
+      s += arrow(x1, y, x2, y, (x1 + x2) / 2, y, '');
+    } else {
+      const x1 = X(i) + w * .35, x2 = X(t) + w * .7, y = top - 2;
+      s += arrow(x1, y, x2, y, (x1 + x2) / 2, top - 52, 'rev');
+    }
+  }
+  const curIdx = ptrs.find(p => p.name === 'curr')?.idx;
+  for (let i = 0; i < n; i++){
+    s += `<rect class="box ${i === curIdx ? 'cur' : rev.has(i) ? 'src' : ''}" x="${X(i)}" y="${top}" width="${w}" height="${hh}" rx="8"/><text x="${X(i) + w / 2}" y="${top + hh / 2 + 6}" text-anchor="middle" font-size="16" font-weight="600">${esc(vals[i])}</text>`;
+  }
+  const slot = {};
+  ptrs.forEach(p => {
+    if (p.idx === undefined) return;
+    const pos = p.idx === null ? (p.name === 'prev' ? -1 : n) : p.idx;
+    const k = slot[pos] = (slot[pos] || 0) + 1;
+    s += `<text class="p${p.c}" x="${X(pos) + w / 2}" y="${top + hh + 16 + (k - 1) * 16}" text-anchor="middle" font-size="12">▲ ${p.name}</text>`;
+  });
+  return `<svg class="vz" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
+}
+
+/* ---- binary tree ---- */
+function buildTree(arr){
+  if (!arr.length || arr[0] === null) return null;
+  const root = {id: 0, val: arr[0], left: null, right: null}; const qq = [root]; let i = 1;
+  while (qq.length && i < arr.length){
+    const nd = qq.shift();
+    if (i < arr.length && arr[i] !== null){ nd.left = {id: i, val: arr[i], left: null, right: null}; qq.push(nd.left); } i++;
+    if (i < arr.length && arr[i] !== null){ nd.right = {id: i, val: arr[i], left: null, right: null}; qq.push(nd.right); } i++;
+  }
+  return root;
+}
+function treeView(root, {state = {}, badge = {}} = {}){
+  const pos = {}; let k = 0, maxD = 0;
+  (function walk(nd, d){ if (!nd) return; walk(nd.left, d + 1); pos[nd.id] = {x: k++, d}; maxD = Math.max(maxD, d); walk(nd.right, d + 1); })(root, 0);
+  const dx = 52, dy = 66, r = 19, pad = 30;
+  const X = id => pad + pos[id].x * dx, Y = id => 28 + pos[id].d * dy;
+  const W = pad * 2 + (k - 1) * dx + 20, H = 28 + maxD * dy + 40;
+  let e = '', n = '';
+  (function walk(nd){ if (!nd) return;
+    [nd.left, nd.right].forEach(c => { if (c) e += `<line class="edge" x1="${X(nd.id)}" y1="${Y(nd.id)}" x2="${X(c.id)}" y2="${Y(c.id)}"/>`; walk(c); });
+    n += `<circle class="nd ${state[nd.id] || ''}" cx="${X(nd.id)}" cy="${Y(nd.id)}" r="${r}"/><text x="${X(nd.id)}" y="${Y(nd.id) + 5}" text-anchor="middle" font-size="14" font-weight="600">${esc(nd.val)}</text>`;
+    if (badge[nd.id] != null) n += `<text class="badge" x="${X(nd.id) + r + 4}" y="${Y(nd.id) - r + 6}" font-size="12">${esc(badge[nd.id])}</text>`;
+  })(root);
+  return `<svg class="vz" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${e}${n}</svg>`;
+}
+
+/* ---- 1-D dp row with arrows ---- */
+function dpRowView(vals, {cur, from = [], blank = new Set(), base = new Set()} = {}){
+  const w = 44, gap = 6, top = 96, n = vals.length;
+  const X = i => 10 + i * (w + gap);
+  const W = X(n - 1) + w + 10, H = top + w + 26;
+  let s = '';
+  from.forEach(f => {
+    const span = Math.abs(cur - f.idx);
+    const x1 = X(f.idx) + w / 2, x2 = X(cur) + w / 2 - 6, cy = top - 26 - Math.min(span, 7) * 9;
+    s += arrow(x1, top - 2, x2, top - 2, (x1 + x2) / 2, cy, 'src');
+    s += `<text class="elab on" x="${(x1 + x2) / 2}" y="${(top + cy) / 2 - 6}" text-anchor="middle">${esc(f.label)}</text>`;
+  });
+  for (let i = 0; i < n; i++){
+    const c = i === cur ? 'cur' : from.some(f => f.idx === i) ? 'src' : blank.has(i) ? 'blank' : '';
+    const v = blank.has(i) ? '' : vals[i] === Infinity ? '∞' : vals[i];
+    s += `<rect class="box ${c}" x="${X(i)}" y="${top}" width="${w}" height="${w}" rx="8"/><text class="${base.has(i) ? 't-muted' : ''}" x="${X(i) + w / 2}" y="${top + w / 2 + 6}" text-anchor="middle" font-size="16" font-weight="600">${esc(v)}</text>`;
+    s += `<text class="t-muted" x="${X(i) + w / 2}" y="${top + w + 17}" text-anchor="middle" font-size="11">${i}</text>`;
+  }
+  return `<svg class="vz" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${s}</svg>`;
+}
+
+/* ---- code highlighter (tiny) ---- */
+const KW = /\b(def|return|for|in|if|else|while|not|and|or|None|range|len|max|min|enumerate|inf|deque|True|False)\b/;
+function hl(line){
+  const re = /("[^"]*"|'[^']*')|(#.*$)|\b(def|return|for|in|if|else|while|not|and|or|None|range|len|max|min|enumerate|inf|deque)\b|\b(\d+)\b/g;
+  let out = '', last = 0, m;
+  while ((m = re.exec(line))){
+    out += esc(line.slice(last, m.index));
+    const cls = m[1] ? 'tk-s' : m[2] ? 'tk-c' : m[3] ? 'tk-k' : 'tk-n';
+    out += `<span class="${cls}">${esc(m[0])}</span>`;
+    last = re.lastIndex;
+  }
+  return out + esc(line.slice(last));
+}
+
+/* ================= problems ================= */
+const PROBLEMS = [];
+const def = p => PROBLEMS.push(p);
+const mkSteps = () => { const S = []; S.add = (line, msg, vars, html) => S.push({line, msg, vars, html}); return S; };
+
+/* ---------- 1. Two Sum ---------- */
+def({
+  id: 'two-sum', num: 1, title: 'Two Sum', diff: 'Easy', cat: 'Arrays & Two Pointers', pattern: 'Hash map', slug: 'two-sum',
+  statement: 'Given an array <code>nums</code> and a number <code>target</code>, return the indices of the two numbers that add up to <code>target</code>.',
+  idea: 'Checking every pair is slow. Instead, remember what you have already seen. For each number, the partner it needs is <code>target − number</code>, and a hash map tells you instantly whether that partner appeared earlier.',
+  time: 'O(n)', space: 'O(n)',
+  params: [{name: 'nums', type: 'ints', def: '[2, 7, 11, 15]', max: 12}, {name: 'target', type: 'int', def: '9'}],
+  code: [
+    'def twoSum(nums, target):',
+    '    seen = {}  # value -> index',
+    '    for i, x in enumerate(nums):',
+    '        need = target - x',
+    '        if need in seen:',
+    '            return [seen[need], i]',
+    '        seen[x] = i'],
+  run({nums, target}){
+    const S = mkSteps(), seen = new Map();
+    const st = (o = {}) => row(
+      panel('nums', arrayView({vals: nums, ptrs: o.i != null ? [{name: 'i', idx: o.i, c: 1}] : [], cls: o.cls || {}})),
+      panel('seen <span class="sub">value → index</span>', mapView([...seen], o)),
+      o.note ? note(o.note) : '');
+    S.add(1, `We will walk through the array once. At every number we ask: <b>have I already seen the number that completes the pair?</b> The map <b>seen</b> remembers each number we pass and where it was.`, {target, seen: '{}'}, st());
+    for (let i = 0; i < nums.length; i++){
+      const x = nums[i], need = target - x;
+      S.add(2, `Look at index ${i}. The value is <b>${x}</b>.`, {i, x, target}, st({i, cls: {[i]: 'cur'}}));
+      S.add(3, `To reach ${target}, the number ${x} needs a partner of ${target} − ${x} = <b>${need}</b>.`, {i, x, need}, st({i, cls: {[i]: 'cur'}, note: `need = ${target} − ${x} = ${need}`}));
+      if (seen.has(need)){
+        const j = seen.get(need);
+        S.add(4, `Is ${need} in seen? <b>Yes</b>, it was at index ${j}. We found the pair.`, {i, x, need, 'seen[need]': j}, st({i, cls: {[i]: 'hit', [j]: 'hit'}, hit: need}));
+        S.add(5, `Return <b>[${j}, ${i}]</b>, because nums[${j}] + nums[${i}] = ${need} + ${x} = ${target}. We only looked at each number once.`, {result: `[${j}, ${i}]`}, st({cls: {[i]: 'hit', [j]: 'hit'}, hit: need}));
+        return S;
+      }
+      S.add(4, `Is ${need} in seen? <b>No</b>. ${seen.size ? 'None of the earlier numbers can pair with ' + x + '.' : 'The map is still empty.'}`, {i, x, need}, st({i, cls: {[i]: 'cur'}, miss: need}));
+      seen.set(x, i);
+      S.add(6, `Save ${x} → ${i} in seen. If a later number needs ${x}, it will find it in one lookup.`, {i, x, [`seen[${x}]`]: i}, st({i, cls: {[i]: 'cur'}, added: x}));
+    }
+    S.add(2, `We reached the end without finding a pair. Your input has no two numbers that add up to ${target}. (LeetCode promises one exists, so the real tests never get here.)`, {}, st());
+    return S;
+  }
+});
+
+/* ---------- 11. Container With Most Water ---------- */
+function barsView(h, {l, r, best}){
+  const n = h.length, bw = 34, gap = 10, H = 170, mx = Math.max(...h, 1), top = 16;
+  const X = i => 14 + i * (bw + gap), Y = v => top + H - (H * v / mx);
+  const W = X(n - 1) + bw + 14, TH = top + H + 50;
+  let s = '';
+  if (l != null && r != null && l < r){
+    const m = Math.min(h[l], h[r]);
+    s += `<rect class="water" x="${X(l) + bw / 2}" y="${Y(m)}" width="${X(r) - X(l)}" height="${top + H - Y(m)}"/>`;
+  }
+  if (best && best.area > 0){
+    const m = Math.min(h[best.l], h[best.r]);
+    s += `<rect class="bestbox" x="${X(best.l) + bw / 2}" y="${Y(m)}" width="${X(best.r) - X(best.l)}" height="${top + H - Y(m)}"/>`;
+  }
+  for (let i = 0; i < n; i++){
+    const c = i === l ? 'l' : i === r ? 'r' : (l != null && (i < l || i > r)) ? 'out' : '';
+    s += `<rect class="bar ${c}" x="${X(i)}" y="${Y(h[i])}" width="${bw}" height="${top + H - Y(h[i])}" rx="3"/>`;
+    s += `<text x="${X(i) + bw / 2}" y="${Y(h[i]) - 4}" text-anchor="middle" font-size="12">${h[i]}</text>`;
+    s += `<text class="t-muted" x="${X(i) + bw / 2}" y="${top + H + 15}" text-anchor="middle" font-size="11">${i}</text>`;
+    if (i === l) s += `<text class="p1" x="${X(i) + bw / 2}" y="${top + H + 32}" text-anchor="middle" font-size="12">▲ l</text>`;
+    if (i === r) s += `<text class="p2" x="${X(i) + bw / 2}" y="${top + H + (i === l ? 46 : 32)}" text-anchor="middle" font-size="12">▲ r</text>`;
+  }
+  return `<svg class="vz" width="${W}" height="${TH}" viewBox="0 0 ${W} ${TH}">${s}</svg>`;
+}
+def({
+  id: 'container', num: 11, title: 'Container With Most Water', diff: 'Medium', cat: 'Arrays & Two Pointers', pattern: 'Two pointers', slug: 'container-with-most-water',
+  statement: 'Each number in <code>height</code> is a wall. Pick two walls that, with the floor, hold the most water. Return that amount.',
+  idea: 'Start with the widest container: one wall at each end. Water is limited by the <b>shorter</b> wall, so moving the taller wall inward can never help. Always move the shorter wall, and keep track of the best area.',
+  time: 'O(n)', space: 'O(1)',
+  params: [{name: 'height', type: 'ints', def: '[1, 8, 6, 2, 5, 4, 8, 3, 7]', max: 14, min0: true}],
+  code: [
+    'def maxArea(height):',
+    '    l, r = 0, len(height) - 1',
+    '    best = 0',
+    '    while l < r:',
+    '        area = (r - l) * min(height[l], height[r])',
+    '        best = max(best, area)',
+    '        if height[l] < height[r]:',
+    '            l += 1',
+    '        else:',
+    '            r -= 1',
+    '    return best'],
+  run({height: h}){
+    const S = mkSteps(); let l = 0, r = h.length - 1, best = {area: 0, l: 0, r: 0};
+    const leg = `<div class="legend"><span><i style="background:var(--i1);opacity:.5"></i>water right now</span><span><i style="border:2px dashed var(--hit)"></i>best so far</span></div>`;
+    const st = () => `<div class="pn">${barsView(h, {l, r, best})}${leg}</div>`;
+    S.add(1, `Put <b>l</b> on the first wall and <b>r</b> on the last. This is the widest container we can make.`, {l, r}, st());
+    S.add(2, `No water measured yet, so best = 0.`, {l, r, best: 0}, st());
+    while (l < r){
+      const m = Math.min(h[l], h[r]), area = (r - l) * m;
+      S.add(3, `l (${l}) is still left of r (${r}), so keep going.`, {l, r, best: best.area}, st());
+      S.add(4, `Water level stops at the shorter wall: width ${r - l} × height min(${h[l]}, ${h[r]}) = ${r - l} × ${m} = <b>${area}</b>.`, {l, r, area, best: best.area}, st());
+      if (area > best.area){ const old = best.area; best = {area, l, r}; S.add(5, `${area} beats the old best (${old}). best = <b>${area}</b>.`, {l, r, area, best: area}, st()); }
+      else S.add(5, `${area} does not beat best (${best.area}). Keep best as it is.`, {l, r, area, best: best.area}, st());
+      if (h[l] < h[r]){
+        S.add(6, `The left wall (${h[l]}) is shorter than the right wall (${h[r]}).`, {l, r, 'height[l]': h[l], 'height[r]': h[r]}, st());
+        const was = h[l]; l++;
+        S.add(7, `Move <b>l</b> inward. Any other container using the left wall would be narrower and still capped at ${was}, so it can't beat what we just measured. That wall is finished.`, {l, r, best: best.area}, st());
+      } else {
+        S.add(6, `The left wall (${h[l]}) is not shorter than the right wall (${h[r]}).`, {l, r, 'height[l]': h[l], 'height[r]': h[r]}, st());
+        const was = h[r]; r--;
+        S.add(9, `Move <b>r</b> inward. Any other container using the right wall would be narrower and still capped at ${was}, so that wall is finished.`, {l, r, best: best.area}, st());
+      }
+    }
+    S.add(10, `l and r met, so every useful container has been checked. The answer is <b>${best.area}</b> (walls ${best.l} and ${best.r}, dashed outline).`, {result: best.area}, st());
+    return S;
+  }
+});
+
+/* ---------- 704. Binary Search ---------- */
+def({
+  id: 'binary-search', num: 704, title: 'Binary Search', diff: 'Easy', cat: 'Arrays & Two Pointers', pattern: 'Binary search', slug: 'binary-search',
+  statement: 'Given a <b>sorted</b> array <code>nums</code> and a <code>target</code>, return the index of <code>target</code>, or -1 if it is not there.',
+  idea: 'Because the array is sorted, one comparison with the middle number tells you which half <b>cannot</b> contain the target. Throw that half away and repeat. Each step cuts the search area in half.',
+  time: 'O(log n)', space: 'O(1)',
+  params: [{name: 'nums', type: 'ints', def: '[-1, 0, 3, 5, 9, 12, 15, 20]', max: 14}, {name: 'target', type: 'int', def: '12'}],
+  code: [
+    'def search(nums, target):',
+    '    lo, hi = 0, len(nums) - 1',
+    '    while lo <= hi:',
+    '        mid = (lo + hi) // 2',
+    '        if nums[mid] == target:',
+    '            return mid',
+    '        if nums[mid] < target:',
+    '            lo = mid + 1',
+    '        else:',
+    '            hi = mid - 1',
+    '    return -1'],
+  run({nums: raw, target}){
+    const S = mkSteps(), nums = [...raw].sort((a, b) => a - b);
+    const sorted = raw.some((v, i) => v !== nums[i]);
+    let lo = 0, hi = nums.length - 1, mid;
+    const st = (found) => {
+      const cls = {}; nums.forEach((_, i) => { if (i < lo || i > hi) cls[i] = 'dim'; });
+      if (mid != null && !(mid < lo || mid > hi)) cls[mid] = found ? 'hit' : 'cur';
+      if (found) cls[mid] = 'hit';
+      const ptrs = [{name: 'lo', idx: lo, c: 1}, {name: 'hi', idx: hi, c: 2}]; if (mid != null) ptrs.push({name: 'mid', idx: mid, c: 3});
+      return row(panel('nums <span class="sub">faded = ruled out</span>', arrayView({vals: nums, ptrs, cls})));
+    };
+    S.add(1, `${sorted ? 'Your array was not sorted, so it has been sorted first (binary search needs sorted input). ' : ''}The target could be anywhere, so the search area is the whole array: lo = 0, hi = ${hi}.`, {lo, hi, target}, st());
+    while (lo <= hi){
+      S.add(2, `lo (${lo}) ≤ hi (${hi}), so there is still something to search.`, {lo, hi, target}, st());
+      mid = Math.floor((lo + hi) / 2);
+      S.add(3, `Check the middle: mid = (${lo} + ${hi}) // 2 = <b>${mid}</b>, where nums[mid] = ${nums[mid]}.`, {lo, hi, mid, 'nums[mid]': nums[mid]}, st());
+      if (nums[mid] === target){ S.add(5, `nums[${mid}] is ${target}. Found it! Return <b>${mid}</b>.`, {result: mid}, st(true)); return S; }
+      if (nums[mid] < target){
+        S.add(6, `${nums[mid]} < ${target}. Everything at or left of mid is even smaller, so the target can't be there.`, {lo, hi, mid, 'nums[mid]': nums[mid]}, st());
+        lo = mid + 1; mid = null;
+        S.add(7, `Throw away the left half: lo = mid + 1 = <b>${lo}</b>.`, {lo, hi, target}, st());
+      } else {
+        S.add(8, `${nums[mid]} > ${target}. Everything at or right of mid is even bigger, so the target can't be there.`, {lo, hi, mid, 'nums[mid]': nums[mid]}, st());
+        hi = mid - 1; mid = null;
+        S.add(9, `Throw away the right half: hi = mid - 1 = <b>${hi}</b>.`, {lo, hi, target}, st());
+      }
+    }
+    S.add(10, `lo passed hi, so the search area is empty. ${target} is not in the array. Return <b>-1</b>.`, {lo, hi, result: -1}, st());
+    return S;
+  }
+});
+
+/* ---------- 3. Longest Substring Without Repeating Characters ---------- */
+def({
+  id: 'longest-substring', num: 3, title: 'Longest Substring Without Repeating Characters', diff: 'Medium', cat: 'Arrays & Two Pointers', pattern: 'Sliding window', slug: 'longest-substring-without-repeating-characters',
+  statement: 'Given a string <code>s</code>, find the length of the longest stretch of characters with no character repeated.',
+  idea: 'Keep a <b>window</b> that never contains a repeat. Grow it one character at a time on the right. When a character that is already inside the window comes in, jump the left edge to just past its earlier copy.',
+  time: 'O(n)', space: 'O(k), k = distinct characters',
+  params: [{name: 's', type: 'str', def: 'abcabcbb', max: 14}],
+  code: [
+    'def lengthOfLongestSubstring(s):',
+    '    last = {}  # char -> index where we last saw it',
+    '    left = best = 0',
+    '    for right, ch in enumerate(s):',
+    '        if ch in last and last[ch] >= left:',
+    '            left = last[ch] + 1',
+    '        last[ch] = right',
+    '        best = max(best, right - left + 1)',
+    '    return best'],
+  run({s}){
+    const S = mkSteps(), chars = [...s], last = new Map(); let left = 0, best = 0, bestStr = '';
+    const st = (right, o = {}) => {
+      const cls = {};
+      if (right != null) for (let k = left; k <= right; k++) cls[k] = 'win';
+      if (right != null) cls[right] = (cls[right] ? cls[right] + ' ' : '') + 'cur';
+      if (o.dup != null) cls[o.dup] = 'dup';
+      const ptrs = [{name: 'left', idx: left, c: 1}]; if (right != null) ptrs.push({name: 'right', idx: right, c: 2});
+      return row(panel('s <span class="sub">blue = current window</span>', arrayView({vals: chars, ptrs, cls})),
+        panel('last <span class="sub">char → index</span>', mapView([...last], {kf: q, hit: o.hit, added: o.added})),
+        panel('best so far', `<div class="note">${best} ${bestStr ? '(' + esc(q(bestStr)) + ')' : ''}</div>`));
+    };
+    S.add(2, `The window starts empty at the beginning. left = 0, best = 0.`, {left, best}, st(null));
+    if (!chars.length){ S.add(8, 'The string is empty, so the answer is 0.', {result: 0}, st(null)); return S; }
+    chars.forEach((ch, right) => {
+      S.add(3, `Move right to index ${right}. The new character is <b>${esc(q(ch))}</b>.`, {left, right, ch: q(ch)}, st(right));
+      if (last.has(ch) && last.get(ch) >= left){
+        const p = last.get(ch);
+        S.add(4, `${esc(q(ch))} is already inside the window, at index ${p}. Keeping both would mean a repeat.`, {left, right, ch: q(ch), 'last[ch]': p}, st(right, {dup: p, hit: ch}));
+        left = p + 1;
+        S.add(5, `Jump left past the old copy: left = ${p} + 1 = <b>${left}</b>. Now the window has no repeats again.`, {left, right, ch: q(ch)}, st(right));
+      } else {
+        S.add(4, last.has(ch) ? `${esc(q(ch))} was seen at index ${last.get(ch)}, but that is left of the window, so it doesn't matter.` : `${esc(q(ch))} hasn't been seen before. No repeat, the window just grows.`, {left, right, ch: q(ch)}, st(right));
+      }
+      last.set(ch, right);
+      S.add(6, `Remember that ${esc(q(ch))} was last seen at index ${right}.`, {left, right, [`last['${ch}']`]: right}, st(right, {added: ch}));
+      const len = right - left + 1;
+      if (len > best){ best = len; bestStr = chars.slice(left, right + 1).join(''); S.add(7, `Window length is ${right} − ${left} + 1 = ${len}. New best: <b>${len}</b>.`, {left, right, best}, st(right)); }
+      else S.add(7, `Window length is ${right} − ${left} + 1 = ${len}. Not longer than best (${best}).`, {left, right, best}, st(right));
+    });
+    S.add(8, `Done. The longest stretch with no repeats has length <b>${best}</b>: ${esc(q(bestStr))}.`, {result: best}, st(null));
+    return S;
+  }
+});
+
+/* ---------- 206. Reverse Linked List ---------- */
+def({
+  id: 'reverse-list', num: 206, title: 'Reverse Linked List', diff: 'Easy', cat: 'Linked Lists & Trees', pattern: 'Pointer juggling', slug: 'reverse-linked-list',
+  statement: 'Given the head of a singly linked list, reverse it and return the new head.',
+  idea: 'Walk the list once and flip each arrow so it points backward. Three pointers stop you from losing your place: <b>prev</b> (the part already reversed), <b>curr</b> (the node being flipped), and <b>nxt</b> (the rest of the list, saved before the flip).',
+  time: 'O(n)', space: 'O(1)',
+  params: [{name: 'head', type: 'ints', def: '[1, 2, 3, 4, 5]', max: 8, min1: true}],
+  code: [
+    'def reverseList(head):',
+    '    prev, curr = None, head',
+    '    while curr:',
+    '        nxt = curr.next',
+    '        curr.next = prev',
+    '        prev = curr',
+    '        curr = nxt',
+    '    return prev'],
+  run({head: vals}){
+    const S = mkSteps(), n = vals.length, next = vals.map((_, i) => i + 1 < n ? i + 1 : null), rev = new Set();
+    let prev = null, curr = 0, nxt;
+    const name = i => i === null ? 'None' : `node ${vals[i]}`;
+    const st = () => listView(vals, next, rev, [{name: 'prev', idx: prev, c: 1}, {name: 'curr', idx: curr, c: 2}, {name: 'nxt', idx: nxt, c: 3}]);
+    const V = () => ({prev: name(prev), curr: name(curr), ...(nxt !== undefined ? {nxt: name(nxt)} : {})});
+    S.add(1, `<b>prev</b> starts at None (nothing is reversed yet). <b>curr</b> starts at the head.`, V(), st());
+    while (curr !== null){
+      S.add(2, `curr is ${name(curr)}, not None, so there is still a node to flip.`, V(), st());
+      nxt = next[curr];
+      S.add(3, `Save the rest of the list first: nxt = curr.next = ${name(nxt)}. If we flipped the arrow first, we'd lose the path to it.`, V(), st());
+      next[curr] = prev; rev.add(curr);
+      S.add(4, `Flip the arrow: ${name(curr)} now points back to ${name(prev)} (blue arrow).`, V(), st());
+      prev = curr;
+      S.add(5, `Move prev forward to ${name(prev)}. Everything from prev backward is now reversed.`, V(), st());
+      curr = nxt;
+      S.add(6, `Move curr forward to ${name(curr)}, the node we saved.`, V(), st());
+    }
+    S.add(2, `curr is None, so every arrow has been flipped.`, V(), st());
+    const order = []; for (let k = prev; k !== null; k = next[k]) order.push(vals[k]);
+    S.add(7, `Return prev. It is the new head. Follow the arrows from it: <b>${order.join(' → ')}</b>.`, {result: fmt(order)}, st());
+    return S;
+  }
+});
+
+/* ---------- 104. Maximum Depth of Binary Tree ---------- */
+def({
+  id: 'max-depth', num: 104, title: 'Maximum Depth of Binary Tree', diff: 'Easy', cat: 'Linked Lists & Trees', pattern: 'DFS recursion', slug: 'maximum-depth-of-binary-tree',
+  statement: 'Return the number of nodes on the longest path from the root down to a leaf.',
+  idea: 'A tree\'s depth is 1 (for the root) plus the deeper of its two subtrees. Each node asks its children, <b>waits</b> for their answers, then reports to its parent. Watch the call stack: it is the list of nodes still waiting.',
+  time: 'O(n)', space: 'O(h), h = tree height',
+  params: [{name: 'root', type: 'tree', def: '[3, 9, 20, null, null, 15, 7]', max: 15}],
+  code: [
+    'def maxDepth(root):',
+    '    if not root:',
+    '        return 0',
+    '    left = maxDepth(root.left)',
+    '    right = maxDepth(root.right)',
+    '    return 1 + max(left, right)'],
+  run({root: arr}){
+    const S = mkSteps(), root = buildTree(arr), state = {}, badge = {}, frames = [];
+    const st = () => row(treeView(root, {state, badge}), stackView(frames.map(f => f.txt())));
+    if (!root){ S.add(2, 'The tree is empty, so its depth is 0.', {result: 0}, ''); return S; }
+    function rec(nd){
+      const f = {nd, l: '?', r: '?', txt(){ return `maxDepth(${nd.val}) <span class="meta2">left=${this.l} right=${this.r}</span>`; }};
+      frames.push(f); Object.keys(state).forEach(k => { if (state[k] === 'active') state[k] = 'stack'; }); state[nd.id] = 'active';
+      S.add(1, `Called maxDepth on node <b>${nd.val}</b>. It isn't None, so it has to ask its children.`, {root: nd.val}, st());
+      for (const side of ['left', 'right']){
+        const c = nd[side], line = side === 'left' ? 3 : 4;
+        if (c){
+          S.add(line, `Node ${nd.val} asks its ${side} child (${c.val}) for its depth, and waits.`, {root: nd.val, left: f.l, right: f.r}, st());
+          const v = rec(c); f[side === 'left' ? 'l' : 'r'] = v; state[nd.id] = 'active';
+          S.add(line, `The ${side} child answered <b>${v}</b>. Back at node ${nd.val}: ${side} = ${v}.`, {root: nd.val, left: f.l, right: f.r}, st());
+        } else {
+          frames.push({txt: () => 'maxDepth(None)'});
+          S.add(2, `Node ${nd.val} has no ${side} child. maxDepth(None) returns <b>0</b> right away: an empty tree has depth 0.`, {root: 'None'}, st());
+          frames.pop(); f[side === 'left' ? 'l' : 'r'] = 0;
+        }
+      }
+      const ret = 1 + Math.max(f.l, f.r);
+      state[nd.id] = 'done'; badge[nd.id] = '↩' + ret;
+      S.add(5, `Node ${nd.val} has both answers: left = ${f.l}, right = ${f.r}. It returns 1 + max(${f.l}, ${f.r}) = <b>${ret}</b> to whoever called it.`, {root: nd.val, left: f.l, right: f.r, returns: ret}, st());
+      frames.pop();
+      return ret;
+    }
+    const ans = rec(root);
+    S.add(5, `The root returned ${ans}, so the maximum depth is <b>${ans}</b>.`, {result: ans}, st());
+    return S;
+  }
+});
+
+/* ---------- 102. Binary Tree Level Order Traversal ---------- */
+def({
+  id: 'level-order', num: 102, title: 'Binary Tree Level Order Traversal', diff: 'Medium', cat: 'Linked Lists & Trees', pattern: 'BFS with a queue', slug: 'binary-tree-level-order-traversal',
+  statement: 'Return the values of the tree level by level, from left to right.',
+  idea: 'Use a <b>queue</b> (first in, first out). At the start of each round, the queue holds exactly one level. Pop that many nodes, record their values, and push their children, which form the next level.',
+  time: 'O(n)', space: 'O(n)',
+  params: [{name: 'root', type: 'tree', def: '[3, 9, 20, 1, null, 15, 7]', max: 15}],
+  code: [
+    'def levelOrder(root):',
+    '    if not root: return []',
+    '    res, q = [], deque([root])',
+    '    while q:',
+    '        level = []',
+    '        for _ in range(len(q)):',
+    '            node = q.popleft()',
+    '            level.append(node.val)',
+    '            if node.left: q.append(node.left)',
+    '            if node.right: q.append(node.right)',
+    '        res.append(level)',
+    '    return res'],
+  run({root: arr}){
+    const S = mkSteps(), root = buildTree(arr), state = {}; let qu = [], level = [], res = [];
+    const st = (newRes) => row(treeView(root, {state}),
+      `<div class="pn" style="gap:14px">${panel('queue <span class="sub">front is on the left</span>', qu.length ? `<div class="queue"><span class="lab">front →</span>${qu.map(n => `<span class="qi">${esc(n.val)}</span>`).join('')}</div>` : '<div class="empty">empty</div>')}
+       ${panel('level', resView(level))}${panel('res', resView(res, newRes))}</div>`);
+    if (!root){ S.add(1, 'Empty tree, return [].', {result: '[]'}, ''); return S; }
+    qu = [root]; state[root.id] = 'queue';
+    S.add(2, `Put the root (${root.val}) in the queue. Green rings mark nodes waiting in the queue.`, {q: fmt(qu.map(n => n.val)), res: '[]'}, st());
+    let lv = 0;
+    while (qu.length){
+      level = [];
+      const size = qu.length;
+      S.add(5, `New round. The queue holds <b>${size}</b> node${size > 1 ? 's' : ''}: that is all of level ${lv}. We will pop exactly ${size}.`, {q: fmt(qu.map(n => n.val)), 'len(q)': size, level: '[]'}, st());
+      for (let k = 0; k < size; k++){
+        const nd = qu.shift(); Object.keys(state).forEach(id => { if (state[id] === 'active') state[id] = 'done'; }); state[nd.id] = 'active';
+        S.add(6, `Pop ${nd.val} from the front of the queue.`, {node: nd.val, q: fmt(qu.map(n => n.val))}, st());
+        level.push(nd.val);
+        S.add(7, `Add ${nd.val} to this level: level = ${fmt(level)}.`, {node: nd.val, level: fmt(level)}, st());
+        const kids = [nd.left, nd.right].filter(Boolean);
+        kids.forEach(c => { qu.push(c); state[c.id] = 'queue'; });
+        S.add(kids.length ? (nd.right && !nd.left ? 9 : 8) : 8, kids.length ? `Push its children (${kids.map(c => c.val).join(', ')}) to the back of the queue. They belong to the next level, so this round won't pop them.` : `${nd.val} has no children. Nothing to push.`, {node: nd.val, q: fmt(qu.map(n => n.val))}, st());
+      }
+      Object.keys(state).forEach(id => { if (state[id] === 'active') state[id] = 'done'; });
+      res.push([...level]);
+      S.add(10, `Level ${lv} is finished. Add ${fmt(level)} to res.`, {res: fmt(res)}, st(res.length - 1));
+      lv++;
+    }
+    S.add(11, `The queue is empty, so every node has been visited. Return <b>${esc(fmt(res))}</b>.`, {result: fmt(res)}, st());
+    return S;
+  }
+});
+
+/* ---------- 450. Delete Node in a BST ---------- */
+def({
+  id: 'delete-bst', num: 450, title: 'Delete Node in a BST', diff: 'Medium', cat: 'Linked Lists & Trees', pattern: 'BST recursion', slug: 'delete-node-in-a-bst',
+  statement: 'Given the root of a binary search tree and a <code>key</code>, delete the node with that value and return the root. The tree must still be a valid BST afterward.',
+  idea: 'Use the BST rule (smaller on the left, bigger on the right) to <b>walk</b> to the key. Then there are three cases. If it has no left child, its right subtree takes its place. If it has no right child, its left subtree takes its place. If it has <b>two children</b>, copy in the smallest value from its right subtree (the in-order successor), then delete that copy from the right subtree instead.',
+  time: 'O(h), h = tree height', space: 'O(h) for the recursion',
+  params: [{name: 'root', type: 'tree', def: '[5, 3, 6, 2, 4, null, 7]', max: 15}, {name: 'key', type: 'int', def: '3'}],
+  code: [
+    'def deleteNode(root, key):',
+    '    if not root:',
+    '        return None',
+    '    if key < root.val:',
+    '        root.left = deleteNode(root.left, key)',
+    '    elif key > root.val:',
+    '        root.right = deleteNode(root.right, key)',
+    '    else:',
+    '        if not root.left:',
+    '            return root.right',
+    '        if not root.right:',
+    '            return root.left',
+    '        succ = root.right',
+    '        while succ.left:',
+    '            succ = succ.left',
+    '        root.val = succ.val',
+    '        root.right = deleteNode(root.right, succ.val)',
+    '    return root'],
+  run({root: arr, key}){
+    const S = mkSteps(), T = {root: buildTree(arr)}, state = {}, frames = [];
+    const nm = nd => nd ? `node ${nd.val}` : 'None';
+    const leg = `<div class="legend"><span><i style="background:var(--cur-soft);border:2px solid var(--p1)"></i>running now</span><span><i style="border:2px dashed var(--p1)"></i>waiting on the stack</span><span><i style="background:var(--miss-soft);border:2px solid var(--miss)"></i>node to delete</span><span><i style="border:2px solid var(--p3)"></i>successor search</span></div>`;
+    const st = () => row(`<div class="pn">${T.root ? treeView(T.root, {state}) : '<div class="empty">empty tree</div>'}${leg}</div>`, stackView(frames));
+    const activate = nd => { Object.keys(state).forEach(k => { if (state[k] === 'active') state[k] = 'stack'; }); state[nd.id] = 'active'; };
+    function del(nd, key){
+      frames.push(`deleteNode(${nd ? nd.val : 'None'}, ${key})`);
+      if (!nd){
+        S.add(2, `We reached an empty spot. ${key} would have been here if it existed, so it isn't in the tree. Return None (nothing changes).`, {root: 'None', key}, st());
+        frames.pop(); return null;
+      }
+      activate(nd);
+      S.add(1, `Now at node <b>${nd.val}</b>, looking for ${key}.`, {root: nd.val, key}, st());
+      if (key < nd.val || key > nd.val){
+        const side = key < nd.val ? 'left' : 'right', ln = key < nd.val ? 3 : 5;
+        S.add(ln, `${key} ${side === 'left' ? '<' : '>'} ${nd.val}. In a BST, every value ${side === 'left' ? 'smaller' : 'bigger'} than ${nd.val} lives in its <b>${side}</b> subtree, so ${side === 'left' ? 'only the left side' : 'only the right side'} can contain ${key}. Go ${side}.`, {root: nd.val, key}, st());
+        const got = del(nd[side], key);
+        nd[side] = got; state[nd.id] = 'active';
+        S.add(ln + 1, `Back at ${nm(nd)}. The ${side} subtree came back as ${nm(got)}. Reattach it: ${nd.val}.${side} = ${got ? got.val : 'None'}.`, {root: nd.val, [`root.${side}`]: got ? got.val : 'None'}, st());
+        S.add(17, `Return ${nm(nd)} to whoever called us. Its own position doesn't change.`, {returns: nd.val}, st());
+        delete state[nd.id]; frames.pop(); return nd;
+      }
+      state[nd.id] = 'del';
+      S.add(7, `${key} == ${nd.val}. <b>Found the node to delete.</b> What we do next depends on how many children it has.`, {root: nd.val, key}, st());
+      if (!nd.left){
+        S.add(9, `It has no left child. So its right subtree (${nm(nd.right)}) can simply take its place. Return ${nm(nd.right)} to the parent, and the parent will link to it instead.`, {returns: nd.right ? nd.right.val : 'None'}, st());
+        delete state[nd.id]; frames.pop(); return nd.right;
+      }
+      if (!nd.right){
+        S.add(11, `It has a left child but no right child. So its left subtree (${nm(nd.left)}) takes its place. Return ${nm(nd.left)} to the parent.`, {returns: nd.left.val}, st());
+        delete state[nd.id]; frames.pop(); return nd.left;
+      }
+      S.add(8, `It has <b>two children</b>, so we can't just remove it: two subtrees can't both hang from the parent's one link. We need a replacement value that keeps the BST order.`, {root: nd.val, key}, st());
+      let succ = nd.right; state[succ.id] = 'queue';
+      S.add(12, `The replacement is the <b>smallest value in the right subtree</b>. It is bigger than everything on the left and smaller than everything else on the right. Start at the right child, ${succ.val}.`, {root: nd.val, succ: succ.val}, st());
+      while (succ.left){
+        S.add(13, `${succ.val} has a left child, so something smaller exists. Keep going left.`, {succ: succ.val}, st());
+        delete state[succ.id]; succ = succ.left; state[succ.id] = 'queue';
+        S.add(14, `succ = ${succ.val}.`, {succ: succ.val}, st());
+      }
+      S.add(13, `${succ.val} has no left child, so it is the smallest value on the right. This is the in-order successor.`, {root: nd.val, succ: succ.val}, st());
+      const old = nd.val; nd.val = succ.val;
+      S.add(15, `Copy ${succ.val} into the node we wanted to delete (it was ${old}). The value ${old} is now gone, but ${succ.val} appears <b>twice</b>.`, {'root.val': nd.val, succ: succ.val}, st());
+      delete state[succ.id]; state[nd.id] = 'active';
+      S.add(16, `Delete the old copy of ${succ.val} from the right subtree. It has no left child, so it will be one of the easy cases.`, {root: nd.val, key: succ.val}, st());
+      const got = del(nd.right, succ.val);
+      nd.right = got; state[nd.id] = 'active';
+      S.add(16, `Back at ${nm(nd)}. The right subtree came back as ${nm(got)}. Reattach it: ${nd.val}.right = ${got ? got.val : 'None'}. The duplicate is gone.`, {root: nd.val, 'root.right': got ? got.val : 'None'}, st());
+      S.add(17, `Return ${nm(nd)} to whoever called us.`, {returns: nd.val}, st());
+      delete state[nd.id]; frames.pop(); return nd;
+    }
+    if (!T.root){ S.add(2, 'The tree is empty, so there is nothing to delete. Return None.', {result: 'None'}, st()); return S; }
+    S.add(0, `Delete ${key} from this binary search tree. Every node's left subtree holds smaller values and its right subtree holds bigger ones.`, {key}, st());
+    const before = T.root, count0 = arr.filter(v => v !== null).length;
+    T.root = del(T.root, key);
+    const order = []; (function walk(n){ if (!n) return; walk(n.left); order.push(n.val); walk(n.right); })(T.root);
+    if (order.length === count0){ S.add(17, `Done. ${key} isn't in the tree, so nothing was removed. The tree is unchanged.`, {result: `root ${T.root.val}`}, st()); return S; }
+    S.add(17, `Done. ${T.root !== before ? `The old root was replaced, so the new root is ${nm(T.root)}. ` : ''}Reading the tree in order (left, node, right) gives ${esc(fmt(order))}. It is still sorted, so the tree is still a valid BST.`, {result: T.root ? `root ${T.root.val}` : 'None'}, st());
+    return S;
+  }
+});
+
+/* ---------- 70. Climbing Stairs ---------- */
+def({
+  id: 'climbing-stairs', num: 70, title: 'Climbing Stairs', diff: 'Easy', cat: 'Dynamic Programming', pattern: '1-D DP', slug: 'climbing-stairs',
+  statement: 'You climb a staircase with <code>n</code> steps, taking 1 or 2 steps at a time. How many different ways can you reach the top?',
+  idea: 'Your <b>last move</b> onto step i was either a 1-step from i−1 or a 2-step from i−2. So ways(i) = ways(i−1) + ways(i−2). Solve the small steps first and build up, so every answer you need is already in the table.',
+  time: 'O(n)', space: 'O(n)',
+  params: [{name: 'n', type: 'int', def: '6', lo: 1, hi: 15}],
+  code: [
+    'def climbStairs(n):',
+    '    if n <= 2: return n',
+    '    dp = [0] * (n + 1)',
+    '    dp[1], dp[2] = 1, 2',
+    '    for i in range(3, n + 1):',
+    '        dp[i] = dp[i - 1] + dp[i - 2]',
+    '    return dp[n]'],
+  run({n}){
+    const S = mkSteps();
+    if (n <= 2){ S.add(1, `With only ${n} step${n > 1 ? 's' : ''}, there ${n > 1 ? 'are 2 ways (1+1 or 2)' : 'is 1 way'}. Return <b>${n}</b>.`, {n, result: n}, ''); return S; }
+    const dp = Array(n + 1).fill(0), blank = new Set(dp.map((_, i) => i).filter(i => i >= 1));
+    const st = (o = {}) => panel('dp[i] = number of ways to reach step i', dpRowView(dp, {...o, blank, base: new Set([0])}));
+    S.add(2, `Make a table dp with a slot for every step from 0 to ${n}. dp[0] is unused here.`, {n}, st());
+    dp[1] = 1; dp[2] = 2; blank.delete(1); blank.delete(2);
+    S.add(3, `Base cases we know by hand: step 1 has 1 way (1). Step 2 has 2 ways (1+1, or 2).`, {n, 'dp[1]': 1, 'dp[2]': 2}, st());
+    for (let i = 3; i <= n; i++){
+      S.add(4, `Now step <b>${i}</b>. Where could the last move have come from?`, {i}, st({cur: i, from: [{idx: i - 1, label: '1 step'}, {idx: i - 2, label: '2 steps'}]}));
+      dp[i] = dp[i - 1] + dp[i - 2]; blank.delete(i);
+      S.add(5, `From step ${i - 1} (${dp[i - 1]} ways) plus from step ${i - 2} (${dp[i - 2]} ways): dp[${i}] = ${dp[i - 1]} + ${dp[i - 2]} = <b>${dp[i]}</b>.`, {i, [`dp[${i - 1}]`]: dp[i - 1], [`dp[${i - 2}]`]: dp[i - 2], [`dp[${i}]`]: dp[i]}, st({cur: i, from: [{idx: i - 1, label: '1 step'}, {idx: i - 2, label: '2 steps'}]}));
+    }
+    S.add(6, `The table is full. There are <b>${dp[n]}</b> ways to climb ${n} steps.`, {result: dp[n]}, st({cur: n}));
+    return S;
+  }
+});
+
+/* ---------- 322. Coin Change ---------- */
+def({
+  id: 'coin-change', num: 322, title: 'Coin Change', diff: 'Medium', cat: 'Dynamic Programming', pattern: '1-D DP', slug: 'coin-change',
+  statement: 'Given coin values <code>coins</code> and an <code>amount</code>, return the fewest coins that add up to the amount, or -1 if it can\'t be made.',
+  idea: 'Let dp[a] be the fewest coins for amount a. If the last coin you use is c, the rest (a − c) is a smaller amount that is <b>already solved</b>. Try every coin as the last one and keep the best: dp[a] = min(dp[a − c] + 1).',
+  time: 'O(amount × coins)', space: 'O(amount)',
+  params: [{name: 'coins', type: 'ints', def: '[1, 2, 5]', max: 4, pos: true}, {name: 'amount', type: 'int', def: '11', lo: 0, hi: 20}],
+  code: [
+    'def coinChange(coins, amount):',
+    '    dp = [0] + [inf] * amount',
+    '    for a in range(1, amount + 1):',
+    '        for c in coins:',
+    '            if c <= a and dp[a - c] + 1 < dp[a]:',
+    '                dp[a] = dp[a - c] + 1',
+    '    return dp[amount] if dp[amount] != inf else -1'],
+  run({coins, amount}){
+    const S = mkSteps(), dp = [0, ...Array(amount).fill(Infinity)];
+    const f = v => v === Infinity ? '∞' : v;
+    const st = (o = {}) => panel('dp[a] = fewest coins to make amount a <span class="sub">(∞ = not possible yet)</span>', dpRowView(dp, {...o, base: new Set([0])}));
+    S.add(1, `Make the table. dp[0] = 0 (zero coins make 0). Every other amount starts at ∞, meaning "no way found yet".`, {coins: fmt(coins), amount}, st());
+    for (let a = 1; a <= amount; a++){
+      S.add(2, `Solve amount <b>${a}</b>. Try each coin as the last coin.`, {a, [`dp[${a}]`]: f(dp[a])}, st({cur: a}));
+      for (const c of coins){
+        if (c > a){ S.add(4, `Coin ${c} is bigger than ${a}, so it can't be the last coin. Skip.`, {a, c}, st({cur: a})); continue; }
+        const from = [{idx: a - c, label: `+1 coin (${c})`}], cand = dp[a - c] + 1;
+        if (dp[a - c] === Infinity){ S.add(4, `Using coin ${c} leaves ${a - c}, which can't be made yet (∞). This coin doesn't help.`, {a, c, [`dp[${a - c}]`]: '∞'}, st({cur: a, from})); continue; }
+        if (cand < dp[a]){
+          const old = dp[a]; dp[a] = cand;
+          S.add(5, `Use coin ${c}: the rest, ${a - c}, takes dp[${a - c}] = ${dp[a - c]} coins. So ${a} takes ${dp[a - c]} + 1 = <b>${cand}</b>, better than ${f(old)}. Update dp[${a}].`, {a, c, [`dp[${a - c}]`]: dp[a - c], [`dp[${a}]`]: cand}, st({cur: a, from}));
+        } else S.add(4, `Coin ${c} gives dp[${a - c}] + 1 = ${cand}, which is not better than ${dp[a]}. Keep ${dp[a]}.`, {a, c, [`dp[${a}]`]: dp[a]}, st({cur: a, from}));
+      }
+    }
+    const ans = dp[amount] === Infinity ? -1 : dp[amount];
+    S.add(6, ans === -1 ? `dp[${amount}] is still ∞, so the amount can't be made. Return <b>-1</b>.` : `The fewest coins for ${amount} is <b>${ans}</b>.`, {result: ans}, st({cur: amount}));
+    return S;
+  }
+});
+
+/* ---------- 1143. Longest Common Subsequence ---------- */
+def({
+  id: 'lcs', num: 1143, title: 'Longest Common Subsequence', diff: 'Medium', cat: 'Dynamic Programming', pattern: '2-D DP', slug: 'longest-common-subsequence',
+  statement: 'Return the length of the longest sequence of letters that appears in both strings in the same order (not necessarily next to each other).',
+  idea: 'dp[i][j] = the answer for the first i letters of a and the first j letters of b. If those last letters <b>match</b>, take the diagonal cell and add 1. If not, drop the last letter of one string or the other and take the better result (up or left).',
+  time: 'O(m × n)', space: 'O(m × n)',
+  params: [{name: 'a', type: 'str', def: 'abcde', max: 8}, {name: 'b', type: 'str', def: 'ace', max: 8}],
+  code: [
+    'def longestCommonSubsequence(a, b):',
+    '    m, n = len(a), len(b)',
+    '    dp = [[0] * (n + 1) for _ in range(m + 1)]',
+    '    for i in range(1, m + 1):',
+    '        for j in range(1, n + 1):',
+    '            if a[i - 1] == b[j - 1]:',
+    '                dp[i][j] = dp[i - 1][j - 1] + 1',
+    '            else:',
+    '                dp[i][j] = max(dp[i - 1][j], dp[i][j - 1])',
+    '    return dp[m][n]'],
+  run({a, b}){
+    const S = mkSteps(), A = [...a], B = [...b], m = A.length, n = B.length;
+    const dp = Array.from({length: m + 1}, () => Array(n + 1).fill(0));
+    const filled = Array.from({length: m + 1}, (_, i) => Array(n + 1).fill(i === 0));
+    for (let i = 0; i <= m; i++) filled[i][0] = true;
+    const st = (o = {}) => {
+      const key = (i, j) => i + ',' + j, src = new Set((o.src || []).map(p => key(...p))), path = o.path || new Set();
+      let t = `<table class="dp"><tr><th></th><th>""<span class="ix">0</span></th>${B.map((c, j) => `<th class="${o.cur && o.cur[1] === j + 1 ? 'hl' : ''}">${esc(c)}<span class="ix">${j + 1}</span></th>`).join('')}</tr>`;
+      for (let i = 0; i <= m; i++){
+        t += `<tr><th class="${o.cur && o.cur[0] === i ? 'hl' : ''}">${i ? esc(A[i - 1]) : '""'}<span class="ix">${i}</span></th>`;
+        for (let j = 0; j <= n; j++){
+          const k = key(i, j); let c = !filled[i][j] ? 'blank' : (i === 0 || j === 0) ? 'base' : '';
+          if (path.has(k)) c = 'path'; if (src.has(k)) c = 'src'; if (o.cur && o.cur[0] === i && o.cur[1] === j) c = 'cur';
+          t += `<td class="${c}">${dp[i][j]}</td>`;
+        }
+        t += '</tr>';
+      }
+      return row(panel('dp[i][j] <span class="sub">rows: a · columns: b</span>', `<div style="overflow-x:auto">${t}</table></div>`), o.found != null ? panel('subsequence so far', note(esc(q(o.found)))) : '');
+    };
+    S.add(2, `Build a table with an extra row and column of zeros. They stand for an empty prefix: nothing in common with an empty string.`, {m, n}, st());
+    for (let i = 1; i <= m; i++) for (let j = 1; j <= n; j++){
+      const ca = A[i - 1], cb = B[j - 1];
+      filled[i][j] = true;
+      if (ca === cb){
+        dp[i][j] = dp[i - 1][j - 1] + 1;
+        S.add(6, `Compare ${esc(q(ca))} (a[${i - 1}]) with ${esc(q(cb))} (b[${j - 1}]): <b>match!</b> Take the diagonal (${dp[i - 1][j - 1]}) and add 1 → dp[${i}][${j}] = <b>${dp[i][j]}</b>.`, {i, j, 'a[i-1]': q(ca), 'b[j-1]': q(cb), [`dp[${i}][${j}]`]: dp[i][j]}, st({cur: [i, j], src: [[i - 1, j - 1]]}));
+      } else {
+        dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        S.add(8, `${esc(q(ca))} ≠ ${esc(q(cb))}. Take the better of up (${dp[i - 1][j]}, drop ${esc(q(ca))}) and left (${dp[i][j - 1]}, drop ${esc(q(cb))}) → dp[${i}][${j}] = <b>${dp[i][j]}</b>.`, {i, j, 'a[i-1]': q(ca), 'b[j-1]': q(cb), [`dp[${i}][${j}]`]: dp[i][j]}, st({cur: [i, j], src: [[i - 1, j], [i, j - 1]]}));
+      }
+    }
+    S.add(9, `The bottom-right cell holds the answer: <b>${dp[m][n]}</b>. Bonus: walk backward from it to see which letters were matched.`, {result: dp[m][n]}, st({cur: [m, n]}));
+    // traceback
+    let i = m, j = n, found = ''; const path = new Set();
+    while (i > 0 && j > 0){
+      path.add(i + ',' + j);
+      if (A[i - 1] === B[j - 1]){ found = A[i - 1] + found; S.add(9, `${esc(q(A[i - 1]))} matched here, so it is part of the subsequence. Step diagonally.`, {found: q(found)}, st({cur: [i, j], path, found})); i--; j--; }
+      else if (dp[i - 1][j] >= dp[i][j - 1]){ S.add(9, `No match here. This value came from above, so step up.`, {found: q(found)}, st({cur: [i, j], path, found})); i--; }
+      else { S.add(9, `No match here. This value came from the left, so step left.`, {found: q(found)}, st({cur: [i, j], path, found})); j--; }
+    }
+    S.add(9, `The longest common subsequence is ${esc(q(found))}, length <b>${found.length}</b>.`, {result: dp[m][n], found: q(found)}, st({path, found}));
+    return S;
+  }
+});
+
+/* ---------- 200. Number of Islands ---------- */
+def({
+  id: 'islands', num: 200, title: 'Number of Islands', diff: 'Medium', cat: 'Graphs & Backtracking', pattern: 'Grid DFS (flood fill)', slug: 'number-of-islands',
+  statement: 'A grid has "1" for land and "0" for water. Count the islands. Land connects up, down, left and right (not diagonally).',
+  idea: 'Scan every cell. When you hit land you haven\'t visited, that is a <b>new island</b>: count it, then flood-fill (“sink”) every piece of land connected to it, so it is never counted again.',
+  time: 'O(rows × cols)', space: 'O(rows × cols) for the recursion',
+  params: [{name: 'grid', type: 'grid', def: '[[1,1,0,0,0],[1,1,0,1,0],[0,0,1,0,0],[0,0,0,1,1]]'}],
+  code: [
+    'def numIslands(grid):',
+    '    count = 0',
+    '    for r in range(len(grid)):',
+    '        for c in range(len(grid[0])):',
+    '            if grid[r][c] == "1":',
+    '                count += 1',
+    '                sink(grid, r, c)',
+    '    return count',
+    '',
+    'def sink(grid, r, c):',
+    '    if r < 0 or c < 0 or r >= len(grid) or c >= len(grid[0]):',
+    '        return',
+    '    if grid[r][c] != "1":',
+    '        return',
+    '    grid[r][c] = "#"  # mark as visited',
+    '    sink(grid, r + 1, c); sink(grid, r - 1, c)',
+    '    sink(grid, r, c + 1); sink(grid, r, c - 1)'],
+  run({grid: G0}){
+    const S = mkSteps(), R = G0.length, C = G0[0].length, G = G0.map(r => [...r]), isl = G0.map(r => r.map(() => 0)), frames = [];
+    let count = 0, scan = null, cur = null;
+    const st = () => {
+      let g = `<div class="grid" style="grid-template-columns:repeat(${C},40px)">`;
+      for (let r = 0; r < R; r++) for (let c = 0; c < C; c++){
+        let cl = G[r][c] === '0' ? 'w' : isl[r][c] ? 'v' + ((isl[r][c] - 1) % 5 + 1) : 'l';
+        if (cur && cur[0] === r && cur[1] === c) cl += ' cur'; else if (scan && scan[0] === r && scan[1] === c) cl += ' scan';
+        g += `<div class="gc ${cl}">${G[r][c] === '0' ? '0' : isl[r][c] ? '#' : '1'}</div>`;
+      }
+      g += '</div>';
+      const leg = `<div class="legend"><span><i style="background:var(--water)"></i>water</span><span><i style="background:var(--land)"></i>land, not visited</span><span><i style="background:var(--i1)"></i>sunk (color = island)</span></div>`;
+      return row(`<div class="pn">${g}${leg}</div>`, `<div class="pn" style="gap:14px">${panel('count', note(count))}${stackView(frames)}</div>`);
+    };
+    S.add(1, `No islands found yet, count = 0. We will scan the grid row by row (dashed outline = scan position).`, {count}, st());
+    const dirs = [[1, 0, 'below', 15], [-1, 0, 'above', 15], [0, 1, 'to the right', 16], [0, -1, 'to the left', 16]];
+    function sink(r, c){
+      frames.push(`sink(${r}, ${c})`); cur = [r, c];
+      G[r][c] = '#'; isl[r][c] = count;
+      S.add(14, `Mark (${r}, ${c}) as visited ("#"), so we never count it twice. It belongs to island ${count}.`, {r, c, count}, st());
+      for (const [dr, dc, nm, ln] of dirs){
+        const nr = r + dr, nc = c + dc;
+        if (nr < 0 || nc < 0 || nr >= R || nc >= C) continue;
+        if (G[nr][nc] !== '1') continue;
+        S.add(ln, `The cell ${nm} (${nr}, ${nc}) is unvisited land, connected to this island. Go there.`, {r, c, 'next': `(${nr}, ${nc})`}, st());
+        sink(nr, nc); cur = [r, c];
+        S.add(ln, `Back at (${r}, ${c}). Keep checking its other neighbors.`, {r, c}, st());
+      }
+      S.add(16, `(${r}, ${c}) has no more unvisited land around it. (Neighbors that are water, already visited, or off the grid return right away.) Return.`, {r, c}, st());
+      frames.pop(); cur = frames.length ? cur : null;
+    }
+    for (let r = 0; r < R; r++) for (let c = 0; c < C; c++){
+      scan = [r, c];
+      if (G[r][c] === '0'){ S.add(4, `(${r}, ${c}) is water. Skip.`, {r, c, count}, st()); continue; }
+      if (G[r][c] === '#'){ S.add(4, `(${r}, ${c}) is land, but it was already sunk as part of island ${isl[r][c]}. Skip.`, {r, c, count}, st()); continue; }
+      S.add(4, `(${r}, ${c}) is land we haven't visited. That means we found a <b>new island</b>.`, {r, c, count}, st());
+      count++;
+      S.add(5, `count = <b>${count}</b>. Now sink the whole island so its other cells aren't counted again.`, {r, c, count}, st());
+      sink(r, c); cur = null;
+      S.add(6, `Island ${count} is completely sunk. Continue scanning.`, {r, c, count}, st());
+    }
+    scan = null;
+    S.add(7, `Every cell has been scanned. There ${count === 1 ? 'is' : 'are'} <b>${count}</b> island${count === 1 ? '' : 's'}.${G0.some((rw, r) => rw.some((v, c) => v === '1' && r + 1 < R && c + 1 < C && G0[r + 1][c + 1] === '1' && G0[r][c + 1] === '0' && G0[r + 1][c] === '0')) ? ' Notice that land touching only diagonally counts as separate islands.' : ''}`, {result: count}, st());
+    return S;
+  }
+});
+
+/* ---------- 78. Subsets ---------- */
+def({
+  id: 'subsets', num: 78, title: 'Subsets', diff: 'Medium', cat: 'Graphs & Backtracking', pattern: 'Backtracking', slug: 'subsets',
+  statement: 'Given an array of distinct numbers, return every possible subset.',
+  idea: 'Every number gets a yes/no decision: <b>include</b> it or <b>skip</b> it. That makes a decision tree, and each path to the bottom is one subset. Backtracking walks this tree. The “undo” step (pop) lets one <code>path</code> list be reused for every branch.',
+  time: 'O(n × 2ⁿ)', space: 'O(n) besides the output',
+  params: [{name: 'nums', type: 'ints', def: '[1, 2, 3]', max: 4, min1: true}],
+  code: [
+    'def subsets(nums):',
+    '    res, path = [], []',
+    '    def backtrack(i):',
+    '        if i == len(nums):',
+    '            res.append(path[:])',
+    '            return',
+    '        path.append(nums[i])  # choice 1: include nums[i]',
+    '        backtrack(i + 1)',
+    '        path.pop()  # undo choice 1',
+    '        backtrack(i + 1)  # choice 2: skip nums[i]',
+    '    backtrack(0)',
+    '    return res'],
+  run({nums}){
+    const S = mkSteps(), n = nums.length, nodes = {};
+    let leafX = 0;
+    (function build(id, path, d){
+      const nd = {id, path, d, label: '[' + path.join(',') + ']'};
+      nodes[id] = nd;
+      if (d < n){ build(id + '1', [...path, nums[d]], d + 1); build(id + '0', path, d + 1); nd.x = (nodes[id + '1'].x + nodes[id + '0'].x) / 2; }
+      else nd.x = leafX++;
+    })('', [], 0);
+    const maxLab = Math.max(...Object.values(nodes).map(nd => nd.label.length));
+    const bw = Math.max(40, 12 + maxLab * 8), dx = bw + 10, dy = 66;
+    const seen = new Set(), collected = new Set(); let active = '';
+    const path = [], res = []; const frames = [];
+    const tree = () => {
+      const X = id => 10 + nodes[id].x * dx + bw / 2, Y = id => 16 + nodes[id].d * dy;
+      const W = 20 + leafX * dx, H = 16 + n * dy + 34;
+      let e = '', s = '';
+      Object.values(nodes).forEach(nd => {
+        if (nd.d < n){
+          [['1', '+' + nums[nd.d]], ['0', 'skip']].forEach(([b, lab]) => {
+            const c = nd.id + b, on = seen.has(c);
+            e += `<line class="edge ${on ? 'on' : 'ghost'}" x1="${X(nd.id)}" y1="${Y(nd.id) + 28}" x2="${X(c)}" y2="${Y(c)}"/>`;
+            e += `<text class="elab ${on ? 'on' : ''}" x="${(X(nd.id) + X(c)) / 2 + (b === '1' ? -6 : 6)}" y="${(Y(nd.id) + 28 + Y(c)) / 2}" text-anchor="${b === '1' ? 'end' : 'start'}">${lab}</text>`;
+          });
+        }
+        const cls = nd.id === active ? 'active' : collected.has(nd.id) ? 'done' : seen.has(nd.id) ? '' : 'ghost';
+        s += `<rect class="nd ${cls}" x="${X(nd.id) - bw / 2}" y="${Y(nd.id)}" width="${bw}" height="28" rx="7"/><text class="${cls === 'ghost' ? 't-muted' : ''}" x="${X(nd.id)}" y="${Y(nd.id) + 18}" text-anchor="middle" font-size="12" ${cls === 'ghost' ? 'opacity=".45"' : ''}>${esc(nd.label)}</text>`;
+      });
+      for (let d = 0; d <= n; d++) s += `<text class="t-muted" x="2" y="${16 + d * dy - 4}" font-size="10">i=${d}</text>`;
+      return `<svg class="vz" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${e}${s}</svg>`;
+    };
+    const st = (newRes) => `<div class="pn" style="gap:14px">${tree()}${row(panel('path', note(esc(fmt(path)))), panel('res', resView(res, newRes)), stackView(frames))}</div>`;
+    S.add(1, `res will hold the answers. path is the subset we're building right now. Faded boxes are parts of the decision tree we haven't explored yet.`, {path: '[]', res: '[]'}, st());
+    function bt(i, id){
+      frames.push(`backtrack(${i})`); active = id; seen.add(id);
+      if (i === n){
+        collected.add(id); res.push([...path]);
+        S.add(4, `i = ${n}: every number has been decided. path = ${esc(fmt(path))} is one subset. Save a copy in res.`, {i, path: fmt(path), 'len(res)': res.length}, st(res.length - 1));
+        frames.pop(); return;
+      }
+      S.add(3, `At i = ${i}, we decide about nums[${i}] = <b>${nums[i]}</b>.`, {i, path: fmt(path)}, st());
+      path.push(nums[i]);
+      S.add(6, `Choice 1: <b>include</b> ${nums[i]}. path = ${esc(fmt(path))}.`, {i, path: fmt(path)}, st());
+      bt(i + 1, id + '1'); active = id;
+      path.pop();
+      S.add(8, `Back at i = ${i}. <b>Undo</b> choice 1: pop ${nums[i]}. path = ${esc(fmt(path))}. This is the “back” in backtracking.`, {i, path: fmt(path)}, st());
+      S.add(9, `Choice 2: <b>skip</b> ${nums[i]} and move on.`, {i, path: fmt(path)}, st());
+      bt(i + 1, id + '0'); active = id;
+      frames.pop();
+    }
+    S.add(10, `Start the decision tree at the root, i = 0.`, {path: '[]'}, st());
+    bt(0, ''); active = null;
+    S.add(11, `Both choices were explored for every number. That gives 2<sup>${n}</sup> = <b>${res.length}</b> subsets.`, {result: fmt(res)}, st());
+    return S;
+  }
+});
+
+/* ================= input parsing ================= */
+function parseParam(p, raw){
+  raw = raw.trim();
+  if (p.type === 'int'){
+    const v = Number(raw);
+    if (raw === '' || !Number.isInteger(v)) throw `${p.name} should be a whole number, like ${p.def}.`;
+    if (p.lo != null && (v < p.lo || v > p.hi)) throw `${p.name} should be between ${p.lo} and ${p.hi} so the picture stays readable.`;
+    return v;
+  }
+  if (p.type === 'str'){
+    const v = raw.replace(/^["']|["']$/g, '');
+    if (v.length > p.max) throw `${p.name} can be at most ${p.max} characters here.`;
+    return v;
+  }
+  let v;
+  try { v = JSON.parse(raw.replace(/'/g, '"').replace(/\bNone\b/g, 'null')); } catch (e) { throw `${p.name} should look like ${p.def}.`; }
+  if (p.type === 'ints'){
+    if (!Array.isArray(v) || !v.every(Number.isInteger)) throw `${p.name} should be a list of whole numbers, like ${p.def}.`;
+    if (v.length > p.max) throw `${p.name} can have at most ${p.max} numbers here.`;
+    if (p.min1 && !v.length) throw `${p.name} needs at least one number.`;
+    if (p.min0 && (v.length < 2 || v.some(x => x < 0))) throw `${p.name} needs at least 2 walls, none negative.`;
+    if (p.pos && (!v.length || v.some(x => x < 1))) throw `${p.name} needs positive coin values.`;
+    if (p.id === undefined && p.name === 'nums' && p.max === 4 && new Set(v).size !== v.length) throw 'The numbers should all be different.';
+    return v;
+  }
+  if (p.type === 'tree'){
+    if (!Array.isArray(v) || !v.every(x => x === null || Number.isInteger(x))) throw `Write the tree in LeetCode's level order, like ${p.def}.`;
+    if (v.filter(x => x !== null).length > p.max) throw `Keep the tree to ${p.max} nodes or fewer.`;
+    return v;
+  }
+  if (p.type === 'grid'){
+    if (!Array.isArray(v) || !v.length || !v.every(r => Array.isArray(r) && r.length === v[0].length && r.length)) throw 'The grid should be a list of equal-length rows, like [[1,0],[0,1]].';
+    if (v.length > 7 || v[0].length > 8) throw 'Keep the grid to 7 rows and 8 columns or fewer.';
+    const g = v.map(r => r.map(x => String(x)));
+    if (!g.every(r => r.every(x => x === '0' || x === '1'))) throw 'Grid cells should be 1 (land) or 0 (water).';
+    return g;
+  }
+}
+
+/* ================= UI ================= */
+const ui = {p: null, steps: [], i: 0, timer: null};
+const nav = $('#nav'), pick = $('#pick');
+(function buildNav(){
+  let cat = '';
+  PROBLEMS.forEach(p => {
+    if (p.cat !== cat){ cat = p.cat; nav.insertAdjacentHTML('beforeend', `<div class="nav-cat">${cat}</div>`); pick.insertAdjacentHTML('beforeend', `<optgroup label="${cat}"></optgroup>`); }
+    nav.insertAdjacentHTML('beforeend', `<button class="nav-item" type="button" data-id="${p.id}"><span class="n">${p.num}</span><span>${p.title}</span></button>`);
+    pick.lastElementChild.insertAdjacentHTML('beforeend', `<option value="${p.id}">${p.num}. ${p.title}</option>`);
+  });
+})();
+nav.addEventListener('click', e => { const b = e.target.closest('.nav-item'); if (b) select(b.dataset.id); });
+pick.addEventListener('change', () => select(pick.value));
+
+function select(id){
+  const p = PROBLEMS.find(x => x.id === id) || PROBLEMS[0];
+  ui.p = p; stop();
+  try { localStorage.setItem('stepwise-last', p.id); } catch (e) {}
+  try { history.replaceState(null, '', '#' + p.id); } catch (e) {}
+  nav.querySelectorAll('.nav-item').forEach(b => b.setAttribute('aria-current', b.dataset.id === p.id));
+  pick.value = p.id;
+  $('#meta').innerHTML = `<span class="chip num">#${p.num}</span><span class="chip ${p.diff.toLowerCase()}">${p.diff}</span><span class="chip">${p.pattern}</span>`;
+  $('#title').textContent = p.title;
+  $('#statement').innerHTML = p.statement;
+  $('#lc').href = `https://leetcode.com/problems/${p.slug}/`;
+  $('#idea').innerHTML = p.idea; $('#time').textContent = p.time; $('#space').textContent = p.space;
+  $('#inputs').innerHTML = p.params.map(pp => `<div class="field"><label for="in-${p.id}-${pp.name}">${pp.name}</label><input id="in-${p.id}-${pp.name}" data-name="${pp.name}" value="${esc(pp.def)}" spellcheck="false"></div>`).join('')
+    + `<button class="btn primary" type="submit">Run with this input</button><button class="btn" type="button" id="b-reset-in">Use example</button><p class="err" id="err" hidden></p>`;
+  $('#b-reset-in').onclick = () => { p.params.forEach(pp => { $(`#in-${p.id}-${pp.name}`).value = pp.def; }); run(); };
+  $('#code').innerHTML = p.code.map((l, k) => `<span class="ln" data-k="${k}"><span class="no">${k + 1}</span>${hl(l)}</span>`).join('');
+  run();
+}
+$('#inputs').addEventListener('submit', e => { e.preventDefault(); run(); });
+
+function run(){
+  const p = ui.p, args = {}, err = $('#err');
+  try {
+    p.params.forEach(pp => { args[pp.name] = parseParam(pp, $(`#in-${p.id}-${pp.name}`).value); });
+    if (p.id === 'subsets' && new Set(args.nums).size !== args.nums.length) throw 'The numbers should all be different.';
+    if (p.id === 'coin-change' && args.coins.some(c => c > 20)) throw 'Keep coin values at 20 or below.';
+    if (p.id === 'delete-bst'){
+      const order = []; (function walk(n){ if (!n) return; walk(n.left); order.push(n.val); walk(n.right); })(buildTree(args.root));
+      if (order.some((v, i) => i && v <= order[i - 1])) throw 'That tree isn\'t a valid BST. Each left child must be smaller than its parent, each right child bigger, and values must be unique.';
+    }
+  } catch (e) { err.textContent = String(e); err.hidden = false; return; }
+  err.hidden = true; stop();
+  ui.steps = p.run(args); ui.i = 0;
+  $('#scrub').max = ui.steps.length - 1;
+  show();
+}
+
+function show(){
+  const s = ui.steps[ui.i], prev = ui.steps[ui.i - 1];
+  $('#stage').innerHTML = s.html || '<div class="empty">nothing to draw</div>';
+  $('#msg').innerHTML = s.msg;
+  $('#counter').textContent = `Step ${ui.i + 1} of ${ui.steps.length}`;
+  $('#scrub').value = ui.i;
+  document.querySelectorAll('#code .ln').forEach(l => l.classList.toggle('on', +l.dataset.k === s.line));
+  const v = s.vars || {}, pv = (prev && prev.vars) || {};
+  const keys = Object.keys(v);
+  $('#vars').innerHTML = keys.length ? keys.map(k => `<span class="var ${prev && pv[k] !== v[k] ? 'chg' : ''}"><span class="vn">${esc(k)} = </span>${esc(fmt(v[k]))}</span>`).join('') : '<span class="empty-v">none yet</span>';
+  $('#b-prev').disabled = ui.i === 0; $('#b-first').disabled = ui.i === 0;
+  $('#b-next').disabled = ui.i === ui.steps.length - 1; $('#b-last').disabled = ui.i === ui.steps.length - 1;
+}
+function go(i){ ui.i = Math.max(0, Math.min(ui.steps.length - 1, i)); show(); }
+const PLAY = '<path d="M7 5v14l12-7z"/>', PAUSE = '<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>';
+function stop(){ clearInterval(ui.timer); ui.timer = null; $('#i-play').innerHTML = PLAY; $('#b-play').setAttribute('aria-label', 'Play'); }
+function play(){
+  if (ui.timer){ stop(); return; }
+  if (ui.i >= ui.steps.length - 1) go(0);
+  $('#i-play').innerHTML = PAUSE; $('#b-play').setAttribute('aria-label', 'Pause');
+  ui.timer = setInterval(() => { if (ui.i >= ui.steps.length - 1) stop(); else go(ui.i + 1); }, 1700 / +$('#speed').value);
+}
+$('#b-play').onclick = play;
+$('#b-next').onclick = () => { stop(); go(ui.i + 1); };
+$('#b-prev').onclick = () => { stop(); go(ui.i - 1); };
+$('#b-first').onclick = () => { stop(); go(0); };
+$('#b-last').onclick = () => { stop(); go(ui.steps.length - 1); };
+$('#scrub').oninput = e => { stop(); go(+e.target.value); };
+$('#speed').onchange = () => { if (ui.timer){ stop(); play(); } };
+document.addEventListener('keydown', e => {
+  if (e.target.closest('input, select, textarea')) return;
+  if (e.key === 'ArrowRight'){ e.preventDefault(); stop(); go(ui.i + 1); }
+  else if (e.key === 'ArrowLeft'){ e.preventDefault(); stop(); go(ui.i - 1); }
+  else if (e.key === ' '){ e.preventDefault(); play(); }
+  else if (e.key === 'Home'){ stop(); go(0); }
+  else if (e.key === 'End'){ stop(); go(ui.steps.length - 1); }
+});
+
+let start = (location.hash || '').slice(1);
+if (!PROBLEMS.some(p => p.id === start)){ try { start = localStorage.getItem('stepwise-last') || ''; } catch (e) { start = ''; } }
+select(start || PROBLEMS[0].id);
+</script>
+
+</body>
+</html>
