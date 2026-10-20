@@ -9,7 +9,7 @@ Visual, step-by-step walkthroughs of LeetCode solutions. Each step moves the pic
 | Arrays & two pointers | 1. Two Sum · 11. Container With Most Water · 704. Binary Search · 3. Longest Substring Without Repeating Characters |
 | Linked lists & trees | 206. Reverse Linked List · 104. Maximum Depth of Binary Tree · 102. Binary Tree Level Order Traversal · 450. Delete Node in a BST |
 | Dynamic programming | 70. Climbing Stairs · 322. Coin Change · 1143. Longest Common Subsequence |
-| Graphs & backtracking | 200. Number of Islands · 78. Subsets |
+| Graphs & backtracking | 200. Number of Islands · 547. Number of Provinces · 78. Subsets |
 
 ## Run it
 

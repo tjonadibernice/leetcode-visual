@@ -181,6 +181,11 @@ svg.vz .nd.done{stroke:var(--hit);fill:var(--hit-soft)}
 svg.vz .nd.queue{stroke:var(--p3);stroke-width:3}
 svg.vz .nd.del{stroke:var(--miss);fill:var(--miss-soft);stroke-width:3}
 svg.vz .nd.ghost{fill:none;stroke:var(--line);stroke-dasharray:4 4}
+svg.vz .nd.v1{fill:var(--i1);stroke:var(--i1)}svg.vz .nd.v2{fill:var(--i2);stroke:var(--i2)}svg.vz .nd.v3{fill:var(--i3);stroke:var(--i3)}svg.vz .nd.v4{fill:var(--i4);stroke:var(--i4)}svg.vz .nd.v5{fill:var(--i5);stroke:var(--i5)}
+svg.vz text.on-c{fill:var(--on-accent)}
+svg.vz .ring{fill:none;stroke:var(--p1);stroke-width:3}
+svg.vz .ring.wait{stroke-dasharray:4 3;stroke-width:2}
+svg.vz .edge.chk{stroke:var(--p1);stroke-width:3.5}
 svg.vz .badge{fill:var(--hit);font-weight:600}
 svg.vz .bar{fill:var(--land);stroke:var(--muted);stroke-width:1}
 svg.vz .bar.l{fill:var(--p1);stroke:none}
@@ -1066,6 +1071,109 @@ def({
   }
 });
 
+/* ---------- 547. Number of Provinces ---------- */
+def({
+  id: 'provinces', num: 547, title: 'Number of Provinces', diff: 'Medium', cat: 'Graphs & Backtracking', pattern: 'Graph DFS (connected components)', slug: 'number-of-provinces',
+  statement: 'There are n cities. <code>isConnected[i][j] = 1</code> means city i and city j are directly connected by a road. A province is a group of cities linked directly or through other cities. Return how many provinces there are.',
+  idea: 'This is Number of Islands on a graph instead of a grid. Go through the cities in order. A city nobody has visited yet starts a <b>new province</b>: count it, then DFS along its roads to mark every city it can reach, so none of them start a province again.',
+  time: 'O(n²), every matrix cell is read once', space: 'O(n) for visited and the recursion',
+  params: [{name: 'isConnected', type: 'matrix', max: 8, def: '[[1,1,0,0,0,0],[1,1,0,1,0,0],[0,0,1,0,1,0],[0,1,0,1,0,0],[0,0,1,0,1,0],[0,0,0,0,0,1]]'}],
+  code: [
+    'def findCircleNum(isConnected):',
+    '    n = len(isConnected)',
+    '    visited = [False] * n',
+    '    def dfs(i):',
+    '        visited[i] = True  # city i joins this province',
+    '        for j in range(n):',
+    '            if isConnected[i][j] == 1 and not visited[j]:',
+    '                dfs(j)',
+    '    provinces = 0',
+    '    for i in range(n):',
+    '        if not visited[i]:',
+    '            provinces += 1',
+    '            dfs(i)',
+    '    return provinces'],
+  run({isConnected: M}){
+    const S = mkSteps(), n = M.length, visited = Array(n).fill(false), prov = Array(n).fill(0), frames = [], path = [];
+    let provinces = 0, cur = null, chk = null;
+    const vis = () => fmt(visited.map(v => v ? 'True' : 'False'));
+    const members = k => prov.map((p, c) => p === k ? c : -1).filter(c => c >= 0);
+    const matrix = () => {
+      let t = `<table class="dp"><tr><th></th>` + M.map((_, j) => `<th class="${chk && chk[1] === j ? 'hl' : ''}">${j}</th>`).join('') + `</tr>`;
+      M.forEach((rw, i) => {
+        t += `<tr><th class="${i === cur ? 'hl' : ''}">${i}</th>` + rw.map((x, j) => `<td class="${chk && chk[0] === i && chk[1] === j ? 'cur' : i === cur && x ? 'src' : x ? '' : 'base'}">${x}</td>`).join('') + `</tr>`;
+      });
+      return t + `</table>`;
+    };
+    const graph = () => {
+      const r = 18, rad = n === 1 ? 0 : Math.max(62, n * 15), c0 = rad + r + 10, W = 2 * c0;
+      const P = k => [c0 + rad * Math.sin(2 * Math.PI * k / n), c0 - rad * Math.cos(2 * Math.PI * k / n)];
+      let e = '', s = '';
+      for (let i = 0; i < n; i++) for (let j = i + 1; j < n; j++){
+        if (!M[i][j]) continue;
+        const on = chk && ((chk[0] === i && chk[1] === j) || (chk[0] === j && chk[1] === i));
+        const [x1, y1] = P(i), [x2, y2] = P(j);
+        e += `<line class="edge ${on ? 'chk' : prov[i] && prov[i] === prov[j] ? 'on' : ''}" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}"/>`;
+      }
+      for (let k = 0; k < n; k++){
+        const [x, y] = P(k);
+        if (k === cur) s += `<circle class="ring" cx="${x}" cy="${y}" r="${r + 5}"/>`;
+        else if (path.includes(k)) s += `<circle class="ring wait" cx="${x}" cy="${y}" r="${r + 5}"/>`;
+        s += `<circle class="nd ${prov[k] ? 'v' + ((prov[k] - 1) % 5 + 1) : ''}" cx="${x}" cy="${y}" r="${r}"/><text class="${prov[k] ? 'on-c' : ''}" x="${x}" y="${y + 5}" text-anchor="middle" font-size="14" font-weight="600">${k}</text>`;
+      }
+      return `<svg class="vz" width="${W}" height="${W}" viewBox="0 0 ${W} ${W}">${e}${s}</svg>`;
+    };
+    const st = () => {
+      const leg = `<div class="legend"><span><i style="background:var(--i1)"></i>color = province</span><span><i style="background:none;border:2px solid var(--p1)"></i>running dfs</span><span><i style="background:none;border:2px dashed var(--p1)"></i>waiting on the stack</span></div>`;
+      return `<div class="pn" style="gap:14px">`
+        + row(panel('isConnected <span class="sub">(row i = roads from city i)</span>', matrix()), `<div class="pn">${panel('cities and roads', graph())}${leg}</div>`)
+        + row(panel('provinces', note(provinces)), panel('visited <span class="sub">(T = True, F = False)</span>', arrayView({vals: visited.map(v => v ? 'T' : 'F'), cls: Object.fromEntries(visited.map((v, k) => [k, v ? 'hit' : '']))})), stackView(frames))
+        + `</div>`;
+    };
+    S.add(2, `There ${n === 1 ? 'is 1 city' : `are ${n} cities`}. Nobody is visited yet. visited[i] flips to True once city i has been put in a province.`, {n, visited: vis()}, st());
+    S.add(8, `provinces = 0. Now walk through the cities in order, looking for ones no earlier province has reached.`, {n, provinces}, st());
+    function dfs(i){
+      frames.push(`dfs(${i})`); path.push(i); cur = i;
+      visited[i] = true; prov[i] = provinces;
+      S.add(4, `Mark city ${i} as visited. It belongs to province <b>${provinces}</b>.`, {i, provinces, visited: vis()}, st());
+      const roads = M[i].map((x, j) => x && j !== i ? j : -1).filter(j => j >= 0);
+      S.add(5, roads.length
+        ? `Scan row ${i} of the matrix. A 1 at column j is a road from city ${i} to city j: here that's ${roads.length === 1 ? 'city' : 'cities'} <b>${roads.join(', ')}</b>. (The 1 at column ${i} is city ${i} itself, already visited. The 0s mean no road, so the if is false there.)`
+        : `Scan row ${i} of the matrix. The only 1 is at column ${i}, which is city ${i} itself. City ${i} has no roads to any other city.`, {i, provinces}, st());
+      for (const j of roads){
+        chk = [i, j];
+        if (visited[j]){
+          S.add(6, `isConnected[${i}][${j}] = 1, so there is a road ${i}–${j}, but city ${j} is <b>already visited</b>. Skip it. Without this check, the DFS would bounce back and forth between ${i} and ${j} forever.`, {i, j, 'visited[j]': 'True'}, st());
+          continue;
+        }
+        S.add(7, `isConnected[${i}][${j}] = 1 and city ${j} isn't visited yet. The road means city ${j} is in the same province, so call <b>dfs(${j})</b>.`, {i, j, 'visited[j]': 'False'}, st());
+        dfs(j); cur = i; chk = null;
+        S.add(7, `Back in dfs(${i}). Everything reachable through city ${j} is now marked. Keep scanning row ${i}.`, {i, j}, st());
+      }
+      chk = null;
+      S.add(5, roads.length
+        ? `Row ${i} is fully scanned. Every road out of city ${i} leads to a visited city, so dfs(${i}) is done. Return.`
+        : `Nothing to explore from city ${i}, so dfs(${i}) returns right away.`, {i}, st());
+      frames.pop(); path.pop(); cur = path.length ? path[path.length - 1] : null;
+    }
+    for (let i = 0; i < n; i++){
+      if (visited[i]){
+        S.add(10, `City ${i} is already visited. It joined province ${prov[i]} when we explored from an earlier city. Skip it.`, {i, provinces}, st());
+        continue;
+      }
+      S.add(10, `City ${i} isn't visited, so no province we've found so far can reach it. It must start a <b>new province</b>.`, {i, provinces}, st());
+      provinces++;
+      S.add(11, `provinces = <b>${provinces}</b>. Now DFS from city ${i} to mark every city in this province.`, {i, provinces}, st());
+      S.add(12, `Call dfs(${i}).`, {i, provinces}, st());
+      dfs(i); cur = null;
+      const mem = members(provinces);
+      S.add(12, `Province ${provinces} is complete: ${mem.length === 1 ? `city ${mem[0]} on its own` : `cities <b>${mem.join(', ')}</b>`}. Continue with the next city.`, {i, provinces, visited: vis()}, st());
+    }
+    S.add(13, `All ${n} ${n === 1 ? 'city has' : 'cities have'} been checked. There ${provinces === 1 ? 'is' : 'are'} <b>${provinces}</b> province${provinces === 1 ? '' : 's'}.`, {result: provinces}, st());
+    return S;
+  }
+});
+
 /* ---------- 78. Subsets ---------- */
 def({
   id: 'subsets', num: 78, title: 'Subsets', diff: 'Medium', cat: 'Graphs & Backtracking', pattern: 'Backtracking', slug: 'subsets',
@@ -1179,6 +1287,14 @@ function parseParam(p, raw){
     const g = v.map(r => r.map(x => String(x)));
     if (!g.every(r => r.every(x => x === '0' || x === '1'))) throw 'Grid cells should be 1 (land) or 0 (water).';
     return g;
+  }
+  if (p.type === 'matrix'){
+    if (!Array.isArray(v) || !v.length || !v.every(r => Array.isArray(r) && r.length === v.length)) throw `${p.name} should be a square matrix (n rows of n numbers), like [[1,1],[1,1]].`;
+    if (v.length > p.max) throw `Keep it to ${p.max} cities or fewer so the picture stays readable.`;
+    if (!v.every(r => r.every(x => x === 0 || x === 1))) throw 'Every entry should be 0 or 1.';
+    if (v.some((r, i) => r[i] !== 1)) throw 'The diagonal should be all 1s, since every city is connected to itself.';
+    if (v.some((r, i) => r.some((x, j) => x !== v[j][i]))) throw 'The matrix should be symmetric: if isConnected[i][j] is 1, isConnected[j][i] must be 1 too.';
+    return v;
   }
 }
 

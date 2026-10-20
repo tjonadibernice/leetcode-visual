@@ -7,7 +7,7 @@ Step-by-step visual walkthroughs of LeetCode solutions. The whole app is one sta
 - **CSS tokens** at the top of `<style>`: every color is a CSS variable on `:root`, redefined for dark mode. Never hard-code a color in a component; use the tokens.
 - **Helpers**: `arrayView`, `mapView`, `resView`, `stackView`, `panel`, `row`, `note`, `arrow`, `listView`, `treeView` / `buildTree`, `dpRowView`, `barsView`, `roomsView`. Reuse these before writing a new renderer.
 - **Problems**: each one is registered with `def({...})`. The sidebar groups problems by `cat`, in the order they are defined, so a new problem must sit next to the others in its category.
-- **Input parsing**: `parseParam` handles the param types `int`, `str`, `ints`, `tree`, `grid`, `rooms`. Extra cross-field checks go in `run()` in the UI section.
+- **Input parsing**: `parseParam` handles the param types `int`, `str`, `ints`, `tree`, `grid`, `matrix`, `rooms`. Extra cross-field checks go in `run()` in the UI section.
 
 ## Adding a problem
 
